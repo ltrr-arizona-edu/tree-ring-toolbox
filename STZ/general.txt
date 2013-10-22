@@ -1,0 +1,158 @@
+GENERAL.TXT
+
+
+CORE-NAMING CONVENTION
+
+Functions treenum.m and maskind.m assume a specific naming and
+numbering convention for cores.  
+
+1. First 3 characters are the site code (e.g., PAD).  
+2. The next up-to-three characters are the numeric tree number
+   as numbered withing the site code (e.g., 4, 04, 004,101)
+3. The single letter following the tree number is the core label
+   (e.g., A, B, C)
+4. The single letter could be followed by a number labeling a
+   segment (e.g., A1)
+
+   Examples of OK core ids:  PAD4A, PAD100B2, PAD04A
+
+5. Cores from the same tree should be next to one another in 
+   the .rwl file.  For example, cores PAD01A, PAD01B and PAD01C 
+   should be together.  It is not necessary that cores be in 
+   alphabetical order withing the tree-group.  So, for example, 
+   the sequence PAD01B, PAD01C, PAD01A is OK.
+
+6  A chronology can be built from an RWL file that contains cores
+   from multiple sites as marked by 3-letter site codes.  For example,
+   A chronology for the Galiuro Mtns might have cores from 
+   Paddys River (PAD) and Douglas Canyon (DCY).  The trees from 
+   different sites sites should not be intermingled in the .rwl file.
+
+7. Here is an example of an acceptable sequence of core ids:
+
+	PAD1A
+	PAD2A
+	PAD03A
+	PAD3B
+	PAD101C1
+	DCY13A
+	DCY13B
+	DCY24A
+	DCY7A
+	DCY7B
+
+
+****************************************
+SETTING UP NECESSARY FILES
+
+-Make a directory c:\uttey\ , and put in it the following tree-ring DOS programs:
+  convert.exe
+  dpl.exe
+  dosxmsf.exe
+-Modify your autoexec.bat file so the path includes c:\uttey\
+
+convert.exe is for converting .rw files to a single .rwl file.  dpl.exe has
+"sur", "cofecha" and lots more useful tree-ring utilities
+dosxmsf.exe is needed to let the DOS programs work on huge data files
+
+*********************************************************
+
+STEP-BY-STEP INSTRUCTIONS FOR STANDARDIZING
+
+By way of example, for Scheelite Canyon PSME collection
+Starting point is a set of .rw files for the site
+
+Set up a working directory right under the root to
+do this analysis. I use c:\work\
+
+Copy all .rw files to be used to C:\work;   
+Make c:\work your current directory, and be in a dos window
+
+[DOS] convert ..... to get rwl file  slc96.rwl
+
+Delete all the copied .rw files from c:\work, leaving just slc96.rwl
+
+[DOS]  dpl--sur... to run the program sur under program library;
+	will get slcsur.out output file;  print this for reference;  see
+	that have 59 cores, oldest starting in 1635; last year on any 
+	core 1995
+
+	dpl--cofecha... default options except ask for listing of measurements
+		gives slccof.out
+
+[WORD] Open slccof.out in one window; copy  Part 5 (sliding correls)
+	to another window;  close slccof.out window;  
+	-Select all/ format to courier 8-pt, bold; parag line spacing 
+	 exactly 6 pt
+	-Paginate if needed, cutting and pasting heading for readability
+	-print out the document with Part 5 (sliding correlations)
+
+[NETWORK COMMUNICATIONS]  Want to get full printout of cofecha 
+output at ccit.  Here's how.
+-Click on ewan vax icon and open session on vax
+-Use winftp, using the host vms.ccit.arizona.edu,  username dmeko
+ password   ribets
+-Pull cofecha output up to vax
+-use script     pccit slccof.out  to print it
+-delete file from vax, log off, get out of network communications
+-pick the output up at ccit
+
+Cofecha output: possible problem in dating of earliest part of
+oldest cores, especially 21a.  Copied  .rw files for 31a, 21b, 22a over
+to d:\work for closer look
+
+[MATLAB] rwsook on  21a vs 22a shows possible problems before 1670.
+21a might have some missing values in drought of 1660's to 1670. Plots
+on chronology indices for santa ritas, catalinas, chiricahuas show
+gross disagreements pre 1670.  Could some or all have dating problems?
+
+***************
+[MATLAB-RWLINP.M] on slc96.rwl to get slc96.mat, which stores
+indices and reference info in form matlab functions can use
+
+   X    9630 by 1          9630     77040       Full      No 
+ nms      59 by 8           472      3776       Full      No 
+ yrs      59 by 3           177      1416       Full      No 
+
+ X is a col vector of ringwidths for all 59 cores, one core 
+ after another in order as in slc96.rwl 
+
+ nms is string matrix identifying the 59 cores
+
+ yrs is first year, last year, and row index to first year's value
+	in X
+
+
+******************
+GRPLOT1  on slc96.mat to get grouped timeseries plot of the 59 
+core ring-width series.  These plots are useful in deciding on
+curve fits.
+
+Gives up to 8 plots per figure.  slc96 data set therefore gives
+8 figure windows to cover the 59 series.  Look at these on the
+screen one by one, and print out with   'print -dps'
+
+
+********************************
+CRVFIT.M -- growth-trend modeling.  Model each ring-width series.
+Save result in slc96.mat
+
+S 59 x 22    stores the curve-fit info
+
+
+
+*****************************
+COREI... generate core indices 
+
+
+
+****************************
+TREEI... generate tree indices
+
+
+
+*****************************
+SITEI... generate site index
+
+
+

@@ -1,0 +1,73 @@
+function yrev = surrgt3b(x,y,yr,yrc);
+% surrgt3b:  surrogate series for assigned surrogates; no overlap version
+% CALL: yrev = surrgt3b(x,y,yr,yrc);
+%
+% Meko 4-20-97
+%
+%************************ IN 
+%
+% x (mx x 1)r  predictor series (surrogate series)
+% y (my x 1)r  predictand series (series needing data)
+% yr (myr x 1)i   year vector, applies to x and y
+% yrc (myrc x 1)i  year vector for calibtation period
+%
+%
+%*************************** OUT
+%
+% yrev (mx x 1)r revised for of y, with NaN data in calibration
+%  period replaced with 'standardized anomaly' estimates
+%
+%*************************** NOTES **********************
+%
+% x has complete data for calibration period.  y has some
+% or all data NaN in calibration period.  Objective is to
+% replace the calibration period NaN of y with estimates from
+% x.  Estimates are such that standardized anomalies from 
+% the long-term mean are the same for the missing-data period
+% for series x and y.
+
+
+[mx,nx]=size(x);
+[my,ny]=size(y);
+
+if nx~=1 | ny~=1;
+   error('col size of x, y should be 1');
+end
+if mx~=mx;
+   error('x and y should have same row size');
+end
+if length(yr) ~= length(x)
+   error('yr must be same length as x, y');
+end
+
+% Initialize yrev as y
+yrev=y;
+
+% Year settings
+yrgo=yr(1);
+yrsp=yr(mx);
+
+yrcgo=yrc(1);
+yrcsp = yrc(length(yrc));
+
+% Pointers to rows of x and y
+L1=yr>=yrcgo & yr<=yrcsp; % calibration period
+L2=isnan(y); % NaN data in y
+L3=L1 & L2; % NaN data in calibration period in y
+
+% Long term means and std devs of x and y
+xmean=nanmean(x);
+ymean=nanmean(y);
+xstd=nanstd(x);
+ystd=nanstd(y);
+
+% Stdzd anomalies of x from its long term mean
+x1= (x-xmean)/xstd;
+
+% Synthetic y based on stdzd anomalies of x
+y1 = ymean + x1*ystd;
+
+% Replace calibration period NaNs in yrev with synthetic y
+yrev(L3)=y1(L3);
+
+

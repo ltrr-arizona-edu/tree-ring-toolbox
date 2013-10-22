@@ -1,0 +1,335 @@
+
+
+             The MathWorks MATLAB Digest
+                   March 1996
+                Volume 4, number 2
+
+=====================
+Table of Contents
+=====================
+
+      o Q & A
+        I would like to know how to plot a second
+             curve (same x-variable) using an additional Y-axis on the
+             same chart.
+       
+        o New Files on the Ftp Site
+
+  -----------------------------------------------------------
+ The MathWorks MATLAB Digest is a monthly electronic newsletter
+ sent to subscribing users. To add yourself to the mailing
+ list, send e-mail to subscribe@mathworks.com (please include
+ your siteid or license number). To remove yourself, send
+ e-mail to unsubscribe@mathworks.com. Send
+ submissions/questions/comments to digest@mathworks.com.
+
+   Carolyn Romano             FTP: ftp.mathworks.com [144.212.100.10]
+   The Mathworks, Inc.        WWW: http://www.mathworks.com
+   cromano@mathworks.com      INFO: info@mathworks.com  
+
+  -----------------------------------------------------------
+The SIMULINK Automotive Examples Booklet
+
+  The MathWorks is pleased to announce the SIMULINK Automotive Examples
+  booklet. This booklet contains a collection of automotive models in:
+
+
+      Engine timing 
+      Antilock braking 
+      Clutch engagement 
+      Hydraulic cylinder 
+      Vehicle suspension 
+      And more... 
+
+  In addition to a thorough discussion of the modeling challenges
+  involved in each model, the SIMULINK model files are provided to
+  allow you to explore the design yourself.
+
+  You can find the SIMULINK models associated with the booklet on
+  our ftp server. 
+  The files are in the directory
+
+  /pub/contrib/simulink/automotive 
+
+  and can be downloaded as a tar
+  or  zip archive. To download the files and request a copy
+  of the booklet via the WWW, visit 
+
+  http://www.mathworks.com/whatsup.html.
+
+  To receive your free copy of the complete SIMULINK Automotive Examples
+  booklet, send mail to info@mathworks.com and ask for KP84.
+
+
+  -----------------------------------------------------------
+Upcoming Conferences and Tradeshows
+
+  Aerosense
+  April 9-11
+  Orlando, FL
+  Booth #707
+
+ 
+  
+
+Answer2: 
+   Hi,
+
+   In answer to your second question, you can put multiple Y-axes on one plot
+   using an M-file written by The MathWorks Technical Support department.
+   You can find this file on our ftp server at:
+
+      ftp://ftp.mathworks.com/pub/tech-support/library/graphics/plotyy.m
+
+   Hope this helps!
+
+   ==Kris Giesing===========================kris@mathworks.com=========
+   | The MathWorks, Inc.           | e-mail: support@mathworks.com    |
+   | 24 Prime Park Way             | WWW  : http://www.mathworks.com  |
+   | Natick, MA 01760-1500         | FTP  : ftp.mathworks.com         |
+   | Phone: (508) 657-7000         | FAX  : (508) 647-7201            |
+   |                               | TechFacts : (508) 657-7022       |
+   | 24-Hour Technical Solutions available by TechFacts, WWW, and FTP |
+   ====================================================================
+
+  ***************************************************************
+
+Question: 
+   The demonstration "fitdemo" provides a curve-fitting algorithm to solve
+   for
+         y = c(1)*exp(-lam(1)*t) + c(2)*exp(-lam(2)*t)
+
+   When the program finishes, it outputs the "lam" values.  However, for
+   the formula to be useful, you need the "c" values, too...but the program
+   does not output these.  Does anyone know where they can be found?
+
+   Thanks,
+   Greg Sandell
+
+   --
+   Gregory J. Sandell, Research Associate, sandell@sparky.parmly.luc.edu
+   Parmly Hearing Institute, Loyola University Chicago
+   6525 N. Sheridan Chicago IL 60626 USA voice:312-508-3976 FAX:312-508-2719
+   WWW: http://www.parmly.luc.edu/sandell/
+
+Answer:
+
+   Hi Greg,
+
+   The "c" valuess are computed via a simple linear least squares fit.
+
+   Notice that the equation to be fit can be written:
+
+      y = A*c
+
+   where c = [c(1) .. c(length(lam))] and
+      A = exp(-t*(lam'));     % re: size(A_t)=[length(t) length(lam)]
+
+   Thus 
+
+      c = A\y;
+
+   HTH,
+   +=== Andrew Potvin ======================== eepotvin@ee.ust.hk ===+
+   | The Hong Kong University of Science and Technology              |
+   | EEE Department                                http://www.ust.hk |
+   +=== Tel: 852-2358-8843 =================== Fax: 852-2358-1485 ===+
+
+  ***************************************************************
+
+Question:
+  I would like to know how to import a graph (.bmp or .jpg). I have a 
+  printout of a graph and I want to find the area under that graph. I can 
+  scan that graph to the computer, but I don't have any idea to manipulate
+  it. 
+
+Answer:
+
+ You can read "jpg" images using the Mex-file jpgread.mex, which can
+ be found on the mathworks ftp site:
+
+   ftp://ftp.mathworks.com/pub/contrib/graphics/jpgread
+
+ Similarly, "loadbmp.m" and "savebmp.m" can be found in
+
+   ftp://ftp.mathworks.com/pub/contrib/graphics/loadbmp.m
+   ftp://ftp.mathworks.com/pub/contrib/graphics/savebmp.m
+
+
+ -- Chris Griffin ------------------------ cgriffin@mathworks.com --   
+    The MathWorks, Inc.                  http://www.mathworks.com  
+ -------------------------------------------------------------------
+
+
+  -----------------------------------------------------------
+New Files on the FTP Site
+
+   -----------------------------------------------------------
+
+        ftp.mathworks.com  [144.212.100.10]
+        Log in as "anonymous", give e-mail address as password.
+
+        Can't ftp? You can access all the files on the ftp site
+        through e-mail. Send e-mail to matlib@mathworks.com with
+        the body of the message containing the commands to be
+        executed. Send the message "help" (without quotes) for
+        syntax details.
+
+        Don't know how? Send an e-mail to matlib@mathworks.com with
+        the body (not the subject line) containing the words
+        "send ftphelp" (no quotes).
+
+        Have some code you would like to share with other
+        MATLAB & SIMULINK users? Get the file /README.incoming
+        and/or send e-mail to ftpadmin@mathworks.com.
+
+        For a hypertext index, point your favorite web browser to
+          http://www.mathworks.com/ftpindex.html
+
+1/29/96
+
+/pub/contrib/graphics/plwin/
+
+        Interactive 2-D plotting for MATLAB
+
+  PL uses the same parameters as PLOT but allows interactive
+  manipulation of axes, titles, text and keys etc.
+
+  R.S.Oldaker@e-eng.hull.ac.uk (R.S.Oldaker)
+
+
+
+
+===================================================================
+2/20/96
+/pub/contrib/stats/sturm
+
+ REGUI is a graphical user interface (GUI) to facilitate comparing
+ regression methods.  The Least Squares regression method is compared
+ to the robust methods, Least Median of Squares (LMS) and Inner
+ Product (IP).  The LMS program included is called Progress (Program
+ for RObust reGRESSion). Users can add other methods as well. Several
+ data sets are included in the DATA subdirectory.  Much of our
+ interface was developed to facilitate the use of PROGRESS.  This
+ program implements LMS and provides excellent diagnostics.  It was
+ written for DOS in Fortran (Rousseeuw and Leroy 1987). Our interface
+ is graphical with pull-down menus, with a point and click interface.
+ If the user chooses certain default settings, there is very little
+ typing.  All the data sets from Rousseeuw are included as well as the
+ PROGRESS executable file.
+
+        The College of Staten Island
+        Deborah Sturm
+        STURM@POSTBOX.CSI.CUNY.EDU
+===========================================
+
+2/21/96
+/pub/contrib/tools/tree
+
+ This directory contains a collection of simple tree-management
+ M-files for use with MATLAB 4.2c
+
+   With these m-files you can:
+        - Create an M-ary tree
+        - Add data to a node
+        - Add children to a node
+        - Add data to branches from a node to a node's children
+        - Move from a node to the node's children or parent
+        - Prune a tree
+        - Extract subtrees from a tree
+        - Graft/merge M-ary and N-ary trees together into a
+          max(M,N)-ary tree
+        - Plot a diagram of the tree with labels for nodes and
+          branches
+        - Watch a demo to learn how most of the
+          functions work
+
+                Jonathan Su
+                su@ee.gatech.edu
+
+
+==================================================================
+2/29/96
+keep.m
+
+ "keep.m" is a complement to the "clear" command:
+ instead of clearing the supplied variables, it
+ keeps them and deletes the rest.
+
+ For example, the command  " keep x y " clears
+ all variables from the workspace except x and y.
+
+        Eric Breitenberger
+        eric@dino.gi.alaska.edu
+
+==================================================================
+3/1/96
+pub/contrib/stats/leasqr/
+
+ A modified version of Levenberg-Marquardt
+ nonlinear regression program previously submitted by R.Schrager.
+ This version corrects an error in that version and also provides
+ an easier to use version with automatic numerical calculation of
+ the Jacobian matrix. In addition, this version calculates statistics
+ such as correlation.
+
+ Version 3 Notes Errors in the original version submitted by Shrager
+ (now called version 1) and the improved version of Jutan (now
+ called version 2) have been corrected.  Additional features,
+ statistical tests, and documentation have also been included
+ along with an example of use.  CAUTION: Some the the input and
+ output arguments were changed from the previous version.
+
+  Ray Muzic     rfm2@ds2.uh.cwru.edu
+  Arthur Jutan  jutan@charon.engga.uwo.ca
+
+====================================================================
+3/4/96
+/pub/contrib/graphics/arrow3.m
+arrow3.m
+
+ Plotting of arrows with option to set arrow head radius.
+
+        gianni@ingfi1.ing.unifi.it
+
+
+
+
+==================================================================
+
+
+===================================================================
+
+3/11/96
+/pub/contrib/graphics/crsshair.m
+
+ A graphical user interface (GUI) interface for reading (x,y) values
+ from a plot. 
+
+   A set of mouse driven crosshairs is placed on the current axes,
+   and displays the current (x,y) position, interpolated between
+   points. For multiple traces, only plots with the same
+   length(xdata) will be tracked. Select done after using to
+   remove the GUI's, and to restore the mouse buttons to
+   previous values.
+
+    Richard G. Cobb    3/96
+    rcobb@afit.af.mil
+
+==============================================
+3/11/96
+/pub/contrib/graphics/ezlegend.m
+
+  Graphical user Interface (GUI) input for legends and linetypes
+
+    Typing "ezlegend" from the command line opens an
+    interactive dialogue box, allowing the user to specify
+    legend labels, line styles, line colors, line widths, and
+    marker sizes using pulldown menus.
+
+    Richard Cobb
+    rcobb@afit.af.mil
+
+
+
+

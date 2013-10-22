@@ -1,0 +1,67 @@
+function yrev=surrgt3a(x,y,yr,yrc);
+%
+% Compute surrogate data for part of one time series, given overlap
+% data for that series with another.  Called by surrgt2.m
+%
+% Meko 2-21-97
+%
+% 
+%******************IN
+%
+% x(mx x 1)r one time series
+% y(my x 1)r another series, needing estimate
+% yr (m1 x 1)i year vector for x, y
+% yrc (m2 x 1)i year vector for calibration period.  Any data in this
+%   period that is NaN in y will be replaced with estimated data
+%		based on stdzd anomalies using stats from overlap of x and y
+%
+%******************* OUT
+%
+% yrev (my x 1)r revised y
+%
+%**************** CALLS
+%
+% scale1.m
+%
+%******************** NOTES ******************************
+%
+% Uses method described in scale1.m
+% Dedicated function for surrgt2.m
+%
+
+
+[mx,nx]=size(x);
+[my,ny]=size(y);
+if mx ~=my;
+	error('x and y must be same length');
+end
+if nx~=1 | ny~=1;
+	error('x and y must be col vects');
+end
+
+
+% Get overlap segments of x,y
+L1=~isnan(x) & ~isnan(y);
+x1=x(L1);
+y1=y(L1);
+
+
+% Make pointer to part of calib period needing data for y
+yrgo=yrc(1);
+yrsp=yrc(length(yrc));
+L2=yr>=yrgo & yr<=yrsp & isnan(y);
+
+% Get that data for x, and check that no NaN in this data
+x2=x(L2);
+if any(isnan(x2)); 
+	error('NaN in the predictor series x2 in calib period');
+end
+
+% Call scale1.m to get estimated data for that period in y
+y2=scale1(x1,y1,x2);
+
+
+%  Substitute the estimates in y
+y(L2)=y2;
+yrev = y;
+

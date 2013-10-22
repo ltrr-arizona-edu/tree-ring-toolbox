@@ -1,0 +1,66 @@
+STATS1.TXT -- describes function STATS1.M
+Computes statistics on the standard and residual core indices.
+
+***********************************************************************
+CS1: columns contain, for each standard core index (rows):
+	1. sequence number for the core
+	2. start year of core index 
+	3. end year of core index
+	4. sample size (number of years)
+	5. mean 
+	6. mean sensitivity
+	7. standard deviation
+
+CE1: same as CS1, except for residual core indices
+
+	Note on columns of CS1 and CE1:
+		1 -this sequence number is the same as in the nms and yrs
+			matrices in the original .mat file for the chronology.
+			So, can get the core id from nms(i,:)
+		2,3 - year interval is for the original core measurements
+			as marked in yrs matrix in xxx.mat;  may contain NaNs;
+			internal NaNs as a result of blocking; flanking NaNs as
+			a result of truncating data or -- for residual series -- 
+			as a result of loss of beginning values in AR modeling
+		4 -sample size includes only non-missing values in the 
+			specified year interval
+		5 -arithmetic mean over years with non-missing data
+		6 -mean sensitivity;  weighted by number of years if the 
+			series is in segments as a result of blocking
+		7 -standard deviation -- uses matlabs std.m
+
+		BASIC1.M is called to get standard deviation and mean
+		MEANSEN1.M is called for mean sensitivity
+
+
+********************************************************************
+
+CS2, CE2 -- product-moment correlation coefficients between 
+ 		core indices
+
+CS2 and CE2 are 5-column matrices containing correlation coefficients
+and related information for non-redundant pairs of core indices. Each 
+row corresponds to a pair of cores.  Columns are:
+
+1. correlation coefficient
+2. sample size on which correlation coefficient is computed
+3. categorical variable marking whether the pair of cores is
+	from the same tree (1) or from different trees (2)
+4,5 sequence numbers (cross-referenced to nms) of the two cores
+
+RTREE1.M is called to computer the correlations
+
+
+***********************************************************************
+
+CS3, CE3 -- mean correlation of core indices for cores from the same
+tree and cores from different trees
+
+CS3 and CE3 are 2 x 2 matrices:
+
+	row 1 - mean correlation coef
+	row 2 - sample size (number of correlation coefs averaged)
+	col 1 - each core in pair is from different tree
+	col 2 - each core in pair is from same tree
+	
+

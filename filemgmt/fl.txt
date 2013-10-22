@@ -1,0 +1,5 @@
+fl.txt \mlb\filemgmt\
+
+cdnow.m  change to "currently relevant" current directory
+cpyfiles.m  copy files from various dirs to a single target dir
+flstree.txt list of files to be copied by cpyfiles.txt for matlab class

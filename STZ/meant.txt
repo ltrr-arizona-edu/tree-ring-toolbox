@@ -1,0 +1,52 @@
+meant.txt :  method for MEANT.M
+
+Done separately for standard and residual core indices
+Take case for standard core indices -- IX
+
+- To start with, have 
+	IX - strung out vector of core indices
+	nms - names for the cores
+	yrs - years and starting row subscripts for cores within IX
+
+	(next series had been returned by TREENO.M)
+	Ti - col 1 is tree sequence;  col 2 is original sequence number
+		of this core within yrs and nms
+	Tnms - tree names
+	Tn - number of trees, equal to row size of Tnms
+
+* Loop over the Tn trees for some initialization info
+	* determine the number of cores for each tree
+	* determine the beginning and ending years for the tree index
+* Calculate the length of the strung-out
+		vector IT, and initialize by filling with NaNs;
+		also initialize ITn as NaN
+* Calculate the starting and ending row indices of IT 
+		in which the tree indices for each tree will be stored
+* Loop over the Tn trees to compute tree indices and put in proper slots
+	in IT and ET
+	* if one core for this tree
+			- get the core index from IX
+			- place the core index in the proper slot in IT
+			- set values of sample size (ITn) to "1" where
+				core index is non-missing, NaN where core index is NaN
+	* if more than one core for this tree
+		- initialize two temporary column vectors of zeros, each the 
+			same length as calculated length for this tree index. One
+			vector is for data, the other for sample size
+		- loop over cores for the tree
+			- get the core index; from row entry in yrs and start and
+				end years for this tree index (from previous loop), know
+				which slots within the temporary vector to put this series
+			- add the series to the proper row slots of the first zero
+				vector
+			- increment the sample size vector
+	   - if final sample size in a year is zero, replace the zero in 
+			the sample-size vector with NaN, and the zero in the data
+			vector with NaN
+		- if sample size >0, no change needed for the slot in the 
+			sample-size vector, but divide the value in the data 
+			vector by its sample size to get the mean 
+		- place the final vector of tree index and tree-index sample
+				size into proper slots in IT and ITn
+
+

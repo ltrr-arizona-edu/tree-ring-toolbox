@@ -1,0 +1,51 @@
+webhow.txt how to update treetool directory
+
+1. REVISING OR UPDATING ALL .M FUNCTIONS
+
+-make sure all needed functions are listed in toolfls.txt
+-run treecpy1.m to copy all those .m functions  to c:\mlb\treetool
+-delete existing trunk.zip from c:\web
+-run winzip 
+	-new archive -- c:\web\trunk.zip 
+	-add files to the archive
+	-browse to c:\mlb\treetool\ and select *.m
+-run com2html.m to build an html file with comments for all functions; say, c:\web\mflhtml.txt
+-In Homepage,, \project\reopen project, and do the following:
+  Project\reopen, if necessary
+  File-New-Default Template >> edit mode
+  Edit-SelectAll-Cut to delete all contents of this default template
+  Click snippets icon; right-click mfilex in \web\snips\ & insert into the blank template
+  If necessary, uncomment the css link in the snippet
+  Put cursor in body of new file, and File-Insert-mhtml.txt
+  Click projects icon to get rid of the snippets window
+  File-Save as-C:\web\mfiles1.html... to overwrite existing file
+  Change to browse mode, and test that you see the revised m-files
+  Edit toolbox.html as needed so that function list hypertext works
+-upload revised toolbox.html, mfiles1.html, and any other revised .html files to the server
+-upload trunk.zip to server
+
+2. REVISING BY ADDING A SINGLE NEW M-FUNCTION
+
+-make sure the function's syntax conforms to toolbox specs
+->cd c:\mlb\manip
+-use treecpy1.m to copy the full list of toolsls.txt into c:\mlb\treetool, if not already there
+-make another file-list file   toolone.txt with the new m-function path\name
+-run treecpy1.m, point to toolone.txt, and send the m-function to c:\mlb\treetool\ondeck?\
+-In matlab, change matlab path so only has c:\mlb\treetool\ and ...\treetool\ondeck\
+-Try running the new function (possibly with profile on) to see if need other new
+ UW files.  Check out profile report to see what those functions are
+-If needed, add the other needed functions to toolone.txt and re-run treecopy1.m ... etc
+(-If it finally works, append contents of toolone.txt to toolfls.txt so that next time
+ will have ALL current toolbox files grabable at once)
+-Run com2html.m , with toolone.txt , make result  c:\web\morehtml.txt; click on the new .m file
+-if com2html.m bombs, correct new .m file in ORIGINAL DIRECTORY, NOT TREETOOL,  and recopy to treetool
+-In Homesite,  Project-reopen project and do following
+ Edit mfiles1.html by putting cursor just above the <\body> line near end of file
+     then using File-Insert-morehtml.txt
+ Edit the "List of Functions" section of toolbox.html to iclude reference to the new functions
+ Test that can go to the List to the m-file & back with the hypertext
+-In explorer, move the new function from \ondeck?\ to \treetool\, and winzip with all
+ other toolbox functions into new trunk.zip; move trunk.zip to \web
+-Copy trunk.zip and any revised html files  from \web to server
+-Clean up by deleting morehtml.txt from \web and deleting \ondeck?\ and contents
+

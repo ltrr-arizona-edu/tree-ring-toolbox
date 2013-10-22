@@ -1,0 +1,3 @@
+fl.txt -- \mlb\template -- matlab templates
+
+tplate1.m  -- graphics template for automatic slide vs paper copy look

@@ -1,0 +1,21 @@
+# AUTOMATICALLY CREATED CONFIG.EDX
+p split 15,41
+p tab 9,17,25,33,41,49,57,65,73,81
+p sound 15000
+p scroll 0
+p bchar ~
+p mgn 75
+p cursor u
+p sync OFF
+p color 7,0,1
+p mem 64
+p back ON
+p case ON
+p eof ON
+p ind OFF
+p wrap OFF
+p xtab OFF
+p cap ON
+p travel OFF
+p blkchk ON
+p stat ON

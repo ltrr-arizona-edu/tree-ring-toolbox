@@ -1,0 +1,57 @@
+From:                      "Richard L. Holmes" <KATI/RHOLMES>
+To:                          DMeko
+Date sent:                 Mon, 23 Feb 1998 09:26:55 -0700
+Subject:                Program MATCRO .txt file
+
+Dave,
+
+Thanks for your message.  Below is an explanation of the contents
+of the __MAT.TXT file produced by the program.
+
+----------------------------------------------------------------------------
+Program MATCRO ___MAT.TXT file.  Column delimiters are "|" (ASCII 124).
+
+Sample line with column numbers, columns 1 to 60:
+0        0         0         0         0         0         0
+0        1         2         3         4         5         6
+123456789012345678901234567890123456789012345678901234567890
+CA092.CRN   |BUE571|BUE571  |BUENA VISTA                    
+
+Sample line continued, columns 60 to 120:
+0         0         0         0         1         1         1
+6         7         8         9         0         1         2
+0123456789012345678901234567890123456789012345678901234567890
+                    |CALIFORNIA   |PIJE|JEFFREY PINE     |S|R
+
+Sample line continued, columns 120 to 182:
+1         1         1         1         1         1         1 1
+2         3         4         5         6         7         8 8
+012345678901234567890123456789012345678901234567890123456789012
+R. L. HOLMES, R. K. ADAMS, M. R. ROSE, T. WARNER              |
+
+Contents of columns:
+
+  1 to  12:  Chronology file name
+ 14 to  19:  Chronology ident from header
+ 21 to  28:  Chronology ident from data
+ 30 to  79:  Name of collection site
+ 81 to  93:  State or country
+ 95 to  98:  Species code
+100 to 116:  Species name
+118 to 118:  Code for type of chronology
+120 to 181:  Names of collectors
+
+Delimiters are in columns 13, 20, 29, 80, 94, 99, 117, 119, 182.
+                                                      R L Holmes 23 Feb 1998
+----------------------------------------------------------------------------
+
+  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  =-=  Richard L. Holmes            Home phone:  520/323-0092         =-=
+  =-=  3443 E. Lee Street           E-Mail:  RHolmes@LTRR.Arizona.Edu =-=
+  =-=  Tucson, Arizona 85716  USA                                     =-=
+  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+ )):) ))) ) )) )) ).) ))) )) ) )) ).) )) ) )) ))) ).) )) ))) )) )).)) )) ))
+ 1950            1960            1970            1980           1990
+
+

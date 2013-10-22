@@ -1,0 +1,25 @@
+meansen1.txt:   plan for meansen1.m -- mean sensitivity
+
+Source:  Fritts (1976, p. 258, eqn 6.5)
+
+Mean sensitivity is computed for a time series.  The series
+might be continuous with no NAs in the simplest case, but
+might also have leading or trailing NAs, or have internal
+blocks of NAs, and so be segmented.
+
+meansen1.m handles the case of leading or trailing NAs by dropping 
+the NAs from the series before proceeding with the analysis.
+meansen1.m handles the case of a segmented times series by
+(1) computing ms separately for each segment, and (2) weighting
+the segment ms-values by their sample size (number of years) to
+get a single ms value for the core.
+
+meansen1.m will eventually be called from stats1.m twice:  (1) on the standard
+core indices, and (2) on the residual core indices.  The core indices 
+are contained within the XI and EI strung-out vectors.  The 
+matrix yrs has the row indices needed to pull out the individual core
+indices from XI or EI.  As pulled out, the core indices could have
+NAs on the ends or in internal blocks.  
+
+
+

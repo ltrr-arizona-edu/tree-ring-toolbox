@@ -1,0 +1,4 @@
+fl.txt  ... \mlb\watbal
+
+matdat01.m  Steve Leavitt utility. Pull pdsi from watbalm1.m storage .mat file and write
+  to ascii pdsi1.dat, pdsi2.dat, etc.  

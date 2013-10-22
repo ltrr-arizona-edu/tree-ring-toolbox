@@ -1,0 +1,401 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      --><title>meastot</title><meta name="generator" content="MATLAB 7.9"><meta name="date" content="2009-11-10"><meta name="m-file" content="meastot"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [xout,yrout,yrsagain]=meastot(xin,yrin,yrstart,yrsagain)
+
+<span class="comment">% yrsagain:  empty, or a rv of years flagged to require re-measuring; on return, empty if remeasured</span>
+
+clc;
+<span class="comment">%</span>
+yrorigin=yrin(1);
+x=xin;
+yr=yrin;
+yrthis=yrstart; <span class="comment">% current start year for measurement</span>
+
+<span class="comment">% Just in case, make sure serial port not assigned to some object</span>
+scheck=instrfind;
+<span class="keyword">if</span> ~isempty(scheck)
+    fclose(scheck);
+    delete(scheck);
+    clear <span class="string">scheck</span>;
+<span class="keyword">end</span>;
+<span class="comment">% Create serial port object</span>
+obj=serial(<span class="string">'com1'</span>);
+<span class="comment">% Set parameters and open serial port</span>
+set(obj,<span class="string">'Parity'</span>,<span class="string">'none'</span>,<span class="string">'StopBits'</span>,1,<span class="string">'DataBits'</span>,8,<span class="string">'BaudRate'</span>,9600',<span class="string">'terminator'</span>,<span class="string">'CR'</span>,<span class="string">'TimeOut'</span>,600);
+fopen(obj);
+<span class="comment">% Initialize counters and while control</span>
+n=0;
+ix = yrthis-yrorigin+1; <span class="comment">% index into x for storing data for yrthis</span>
+count=0;
+reclen=15; <span class="comment">% input string length</span>
+kwh1=1;
+dnum=0;
+prevnum = 0;
+irev=0; <span class="comment">% flag for crank being reversed</span>
+dlg = seginit();
+disp(<span class="string">'Starting acquisition...'</span>);
+<span class="comment">% Measurement while loop</span>
+<span class="keyword">while</span> kwh1==1
+    <span class="keyword">if</span> n==0
+        <span class="keyword">if</span> ~ishandle(dlg)
+            dlg = seginit();
+        <span class="keyword">end</span>;
+        set(dlg,<span class="string">'Visible'</span>,<span class="string">'on'</span>);
+    <span class="keyword">end</span>;
+    <span class="keyword">while</span> count&lt;reclen
+        [g,count] = fgets(obj); <span class="comment">% store measurement (a string) in g</span>
+    <span class="keyword">end</span>;
+    <span class="keyword">if</span> n==0
+        disp(<span class="string">'Got initial value...'</span>);
+        <span class="keyword">if</span> ishandle(dlg)
+            set(dlg,<span class="string">'Visible'</span>,<span class="string">'off'</span>);
+        <span class="keyword">end</span>;
+    <span class="keyword">end</span>;
+    n=n+1;
+    i1=findstr(g,<span class="string">'mm'</span>);  <span class="comment">% mm string comes after measured value from QUICKCHECK</span>
+    <span class="keyword">if</span> ~isempty(i1) <span class="comment">% "mm" string found; we have data from QuickCheck</span>
+        <span class="comment">% Cull the measurement from g and convert the measurement from sting to numeric</span>
+        isp=i1-1;
+        d = g(2:isp);
+        prevnum = dnum;
+        dnum = str2num(d);
+        <span class="keyword">if</span> n~=1 <span class="comment">% if not the first reading</span>
+            <span class="keyword">if</span> dnum&lt;0
+                <span class="keyword">if</span> irev==1
+                    irev=0;
+                <span class="keyword">else</span>
+                    fclose(obj);
+                    delete(obj);
+                    clear <span class="string">obj</span>;
+                    error(<span class="string">'Quick-Check Display is negative--invalid except before first ring measured'</span>);
+                <span class="keyword">end</span>;
+            <span class="keyword">end</span>;
+        <span class="keyword">else</span> <span class="comment">% first click, must reset velmex before this</span>
+            <span class="keyword">if</span> dnum~=0
+                fclose(obj);
+                delete(obj);
+                clear <span class="string">obj</span>;
+                error(<span class="string">'Must reset Quick-Check to 0 and Press PRINT to start measuring any segment'</span>);
+            <span class="keyword">else</span>
+                prevnum = 0;
+                disp(<span class="string">'OK, crank and click to record measurements'</span>);
+            <span class="keyword">end</span>;
+        <span class="keyword">end</span>;
+    <span class="keyword">else</span>
+        fclose(obj);
+        delete(obj);
+        clear(obj);
+        error(<span class="string">'No  mm string'</span>);
+    <span class="keyword">end</span>;
+    <span class="keyword">if</span> n&gt;1
+        w=dnum-prevnum; <span class="comment">% measurement is difference of cumulative reading</span>
+        <span class="keyword">if</span>  w&lt;0 <span class="comment">% negative delta -- meaning you reversed crank on velmex</span>
+            irev=1;
+            kmen4=menu(<span class="string">'Choose'</span>,<span class="string">'Stop measuring'</span>,<span class="keyword">...</span>
+                <span class="string">'Skip to a different part of series'</span>);
+            <span class="keyword">switch</span> kmen4;
+            <span class="keyword">case</span> 1
+                disp(<span class="string">'OK, Measurement stopped'</span>);
+                kwh1=0;
+            <span class="keyword">case</span> 2 <span class="comment">%  skip to a differet part</span>
+                kwh2=1;
+                <span class="keyword">while</span> kwh2==1
+                    prompt={<span class="string">'Enter start year of segment to begin remeasuring):'</span>};
+                    def={int2str(yrthis+2)};
+                    dlgTitle=<span class="string">'Input year'</span>;
+                    lineNo=1;
+                    answer=inputdlg(prompt,dlgTitle,lineNo,def);
+                    yrresume = str2num(answer{1});
+                    <span class="keyword">if</span> yrresume&lt;yrorigin || yrresume&gt;max(yrin)
+                        uiwait(msgbox({<span class="string">'Year out of range; pick another!'</span>,<span class="keyword">...</span>
+                                <span class="string">'If desired year out of range, increase maxlen or nyrlead'</span>,<span class="keyword">...</span>
+                                <span class="string">'in calling function rwmeas.'</span>,<span class="keyword">...</span>
+                                <span class="string">'Can change at openg prompt or the hardcoded defaults'</span>},<span class="string">'Message'</span>,<span class="string">'modal'</span>));
+                    <span class="keyword">else</span>
+                        yrthis=yrresume;
+                        kwh2=0;
+                    <span class="keyword">end</span>;
+                <span class="keyword">end</span>; <span class="comment">% while</span>
+                <span class="comment">% Resume at early or latewood</span>
+                ix=yrthis-yrorigin+1;
+                n=0;
+                count=0;
+            <span class="keyword">otherwise</span>;
+            <span class="keyword">end</span>;
+        <span class="keyword">elseif</span>   w&gt;=0  <span class="comment">% measurement is non-negative</span>
+            irev=0;
+            x(ix)=w;
+            str1=num2str([yrthis x(ix)]);
+            disp(str1);
+            <span class="keyword">if</span> rem(yrthis,10)==0
+                beep;
+            <span class="keyword">end</span>;
+            <span class="comment">% Clear remeasure flag if year was flagged for re-measurement</span>
+            <span class="keyword">if</span> ~isempty(yrsagain)
+                idelete=find(yrthis==yrsagain);
+                yrsagain(idelete)=[];
+                <span class="keyword">if</span> isempty(yrsagain)
+                    yrsagain=[];
+                <span class="keyword">end</span>;
+            <span class="keyword">end</span>;
+            yrthis=yrthis+1;
+            ix=yrthis-yrorigin+1;
+        <span class="keyword">end</span>; <span class="comment">% elseif on  w</span>
+    <span class="keyword">end</span>; <span class="comment">% if n&gt;1</span>
+    count=0;
+<span class="keyword">end</span>; <span class="comment">% while kwh1==1;</span>
+
+<span class="comment">% Strip off trailing NaN</span>
+x=trailnan(x);
+mx = length(x);
+yr = yrin(1:mx);
+
+<span class="comment">% strip off leading NaN</span>
+xflip=flipud(x);
+yrflip=flipud(yr);
+x=trailnan(xflip);
+mx=length(x);
+yr=yrflip(1:mx);
+xout=flipud(x);
+yrout=flipud(yr);
+
+<span class="comment">%instrreset;</span>
+fclose(obj);
+delete(obj);
+clear <span class="string">obj</span>;
+<span class="comment">%delete obj;</span>
+</pre><pre class="codeoutput">Input argument "yrin" is undefined.
+
+Error in ==&gt; meastot at 7
+yrorigin=yrin(1);
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.9<br></p></div><!--
+##### SOURCE BEGIN #####
+function [xout,yrout,yrsagain]=meastot(xin,yrin,yrstart,yrsagain)
+
+% yrsagain:  empty, or a rv of years flagged to require re-measuring; on return, empty if remeasured
+
+clc;
+% 
+yrorigin=yrin(1);
+x=xin;
+yr=yrin;
+yrthis=yrstart; % current start year for measurement
+
+% Just in case, make sure serial port not assigned to some object
+scheck=instrfind;
+if ~isempty(scheck)
+    fclose(scheck);
+    delete(scheck);
+    clear scheck;
+end;
+% Create serial port object  
+obj=serial('com1');
+% Set parameters and open serial port
+set(obj,'Parity','none','StopBits',1,'DataBits',8,'BaudRate',9600','terminator','CR','TimeOut',600);
+fopen(obj);
+% Initialize counters and while control
+n=0;
+ix = yrthis-yrorigin+1; % index into x for storing data for yrthis
+count=0;
+reclen=15; % input string length
+kwh1=1;
+dnum=0;
+prevnum = 0;
+irev=0; % flag for crank being reversed
+dlg = seginit();
+disp('Starting acquisition...');
+% Measurement while loop
+while kwh1==1
+    if n==0
+        if ~ishandle(dlg)
+            dlg = seginit();
+        end;
+        set(dlg,'Visible','on');
+    end;
+    while count<reclen
+        [g,count] = fgets(obj); % store measurement (a string) in g 
+    end;
+    if n==0
+        disp('Got initial value...');
+        if ishandle(dlg)
+            set(dlg,'Visible','off');
+        end;
+    end;
+    n=n+1;
+    i1=findstr(g,'mm');  % mm string comes after measured value from QUICKCHECK
+    if ~isempty(i1) % "mm" string found; we have data from QuickCheck
+        % Cull the measurement from g and convert the measurement from sting to numeric
+        isp=i1-1;
+        d = g(2:isp);
+        prevnum = dnum;
+        dnum = str2num(d);
+        if n~=1 % if not the first reading
+            if dnum<0
+                if irev==1
+                    irev=0;
+                else
+                    fclose(obj);
+                    delete(obj);
+                    clear obj;
+                    error('Quick-Check Display is negativeREPLACE_WITH_DASH_DASHinvalid except before first ring measured');
+                end;
+            end;
+        else % first click, must reset velmex before this
+            if dnum~=0
+                fclose(obj);
+                delete(obj);
+                clear obj;
+                error('Must reset Quick-Check to 0 and Press PRINT to start measuring any segment');
+            else
+                prevnum = 0;
+                disp('OK, crank and click to record measurements');
+            end;
+        end;
+    else
+        fclose(obj);
+        delete(obj);
+        clear(obj);
+        error('No  mm string');
+    end;
+    if n>1
+        w=dnum-prevnum; % measurement is difference of cumulative reading
+        if  w<0 % negative delta REPLACE_WITH_DASH_DASH meaning you reversed crank on velmex
+            irev=1;
+            kmen4=menu('Choose','Stop measuring',...
+                'Skip to a different part of series');
+            switch kmen4;
+            case 1
+                disp('OK, Measurement stopped');
+                kwh1=0;
+            case 2 %  skip to a differet part
+                kwh2=1;
+                while kwh2==1
+                    prompt={'Enter start year of segment to begin remeasuring):'};
+                    def={int2str(yrthis+2)};
+                    dlgTitle='Input year';
+                    lineNo=1;
+                    answer=inputdlg(prompt,dlgTitle,lineNo,def);
+                    yrresume = str2num(answer{1});
+                    if yrresume<yrorigin || yrresume>max(yrin)
+                        uiwait(msgbox({'Year out of range; pick another!',...
+                                'If desired year out of range, increase maxlen or nyrlead',...
+                                'in calling function rwmeas.',...
+                                'Can change at openg prompt or the hardcoded defaults'},'Message','modal'));
+                    else
+                        yrthis=yrresume;
+                        kwh2=0;
+                    end;
+                end; % while
+                % Resume at early or latewood
+                ix=yrthis-yrorigin+1;
+                n=0;
+                count=0;
+            otherwise;
+            end;
+        elseif   w>=0  % measurement is non-negative
+            irev=0;
+            x(ix)=w;
+            str1=num2str([yrthis x(ix)]); 
+            disp(str1);
+            if rem(yrthis,10)==0
+                beep;  
+            end;
+            % Clear remeasure flag if year was flagged for re-measurement
+            if ~isempty(yrsagain)
+                idelete=find(yrthis==yrsagain);
+                yrsagain(idelete)=[];
+                if isempty(yrsagain)
+                    yrsagain=[];
+                end;
+            end;
+            yrthis=yrthis+1;
+            ix=yrthis-yrorigin+1;
+        end; % elseif on  w
+    end; % if n>1
+    count=0;
+end; % while kwh1==1;
+
+% Strip off trailing NaN
+x=trailnan(x); 
+mx = length(x);
+yr = yrin(1:mx);
+
+% strip off leading NaN
+xflip=flipud(x);
+yrflip=flipud(yr);
+x=trailnan(xflip);
+mx=length(x);
+yr=yrflip(1:mx);
+xout=flipud(x);
+yrout=flipud(yr);
+
+%instrreset;
+fclose(obj);
+delete(obj);
+clear obj;
+%delete obj;
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,23 @@
+<HR>
+<A name='eightplt'><H3>eightplt</H3> </A>
+<PRE>
+ eightplt: up to eight plotes of ring width per page; utility called by grplot.m
+ eightplt(datin);
+ Last revised 4-12-99
+
+</PRE>
+ A utility plotting function called by grplot.m.  Most users will not need to
+ call eightplt.m
+
+<PRE>
+*** IN
+ datin{} -- contents described later
+
+***  OUT
+ No output args -- just the plots, ma'am.
+
+*** UW FUNCTIONS CALLED -- none
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A>

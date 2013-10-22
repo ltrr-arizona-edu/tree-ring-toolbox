@@ -1,0 +1,42 @@
+To format file in ms word: (1) open the .txt file as a word doc
+(2) change font size to 8; (3) select  the last
+header line and table body and click the table grid
+(4)use table formatting to get to look right
+(5) make sure to make the superscripts super
+Period3   Curve4      Parameters5   AR Model6
+Core1	Seq2	Start	End	Type	k	a	b	p	Persist
+SAW100A 	(1)	1774	1940	 CS	4.1728e-006	116.9	     0.5	   1	 0.93
+SAW101A 	(2)	1828	1993	 CS	2.2913e-006	135.8	     0.5	   1	 0.78
+SAW102C 	(3)	1830	1950	 CS	1.5141e-005	84.7	     0.5	   1	 0.68 
+SAW103B 	(4)	1747	1932	 NE	    110.9	160.79	1.25E-002	   1	 0.69
+SAW104A 	(5)	1903	1993	 CS	4.7329e-005	63.7	     0.5	   1	 0.77 
+
+
+1Core: Identifies site, tree and core
+2seq.: Sequence # of core in .rwl ring-width storage file
+3Period: Start and end year of period used to fit detrending curve
+4Type: Curve type used in detrending:
+  NE - modified negative exponential
+  CS - cubic smoothing spline
+  HL - horizontal line through sample mean
+5Parameters: parameters of detrending curve; definition depends on curve type
+  NE: equation y=k + a*exp(-b*(t-start))
+      where y is smooth curve value in 100ths of mm
+        k, a, and b are parameters fit by least squares
+        t is the year, and
+        start is the first year of the fit period (column 3 this table)
+  SL: equation y=a + b*(t-tstart)
+      where y is smooth curve value in 100ths of mm
+        a and b are parameters fit by least squares
+        t is the year, and
+        start is the first year of the fit period (column 3 this table)
+  CS: cubic spline parameter and properties
+      k = spline parameter
+      a = period (years) at which amplitude of frequency response of spline equals b
+      b = amplitude of frequency response at period "a" years
+  HL: Horizontal line information
+      k = mean ring width for the period listed in columns 3 and 4
+6Information on autoregressive model used to generate residual core index
+  p = order of the model
+  Persist = pct of standard core index variance in persistence
+      (computed as 1 - ratio of residual original variance

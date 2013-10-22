@@ -1,0 +1,98 @@
+#  Spectrum and Squared Coherency 
+#
+# 
+#
+# Data in a 2-col ascii file v.dat -- 500 years, 1400-1899
+#  col 1 -- y
+#  col 2 -- x
+
+par.orig_par()      # store default plot settings
+
+
+dev.set(3)
+frame()
+dev.set(2)
+frame()
+
+# Read input data, and pull out two series to be analyzed
+z_matrix(scan('c:\\wrk0\\v.dat'),ncol=2,byrow=T)
+y_z[,1] # chronology
+u_z[,2] # ppt
+
+
+#convert to z-scores
+meany_mean(y)
+stdy_sqrt(var(y))
+meanu_mean(u)
+stdu_sqrt(var(u))
+y_(y-meany)/stdy
+u_(u-meanu)/stdu
+
+
+# Convert input data to time series
+y_ts(y,start=1400,end=1899,frequency=1)
+u_ts(u,start=1400,end=1899,frequency=1)
+
+
+# Bind two series into a time series matrix
+yu_tsmatrix(y,u)
+
+
+coh1.list_spec.pgram(yu,span=c(7,7),taper=0.1,pad=0,detrend=F,
+   demean=T, plot=F)
+
+w_coh1.list$coh
+f_coh1.list$freq
+bw_coh1.list$bandwidth
+ff_coh1.list$filter
+ph_coh1.list$phase*360
+specu_coh1.list$spec[,2]
+specy_coh1.list$spec[,1]
+
+N_coh1.list$n.used
+bww_bandw1(ff,N,0)
+
+c95_cohlim(ff,0.95,0,0) # 95% confidence level
+c99_cohlim(ff,0.99,0,0)
+
+plot(f,w,las=1,lty=1,type='l',xlab='FREQUENCY(1/YR)',
+	ylim=c(0,1))
+title(main='SQUARED COHERENCY')
+
+
+# add confidence bars
+lines(c(0,0.5),c(c95,c95),lty=2,lwd=2)
+text(0.27,c99+0.025,'99%')
+text(0.27,c95+0.025,'95%')
+lines(c(0,0.5),c(c99,c99),lty=2,lwd=4)
+
+# locate add bandwidth bar
+plotbw(bww)
+
+
+# locate txt
+txt_'KEEN CAMP SUMMIT TREE-RING INDEX AND NOV-APR PPT, 1908-1992'
+text(locator(1),txt) 
+
+frame()
+dev.set(3)
+matplot(f,coh1.list$spec,xlab='FREQUENCY (1/YR)',ylab='DB',
+	type='l',lty=c(1,3),col=c(1,2),lwd=c(1,2)) 
+title(main=' NORMALIZED SPECTRUM -- 1400-1899')
+
+
+plotbwci(bww,c(-2.52,3.57))
+
+
+txt1_('x')
+txt2_('y')
+arrows.dm(1)
+text(locator(1),txt1,adj=0)
+arrows.dm(1)
+text(locator(1),txt2,adj=0)
+
+par(par.orig)
+
+#rm(u,y,z)
+
+

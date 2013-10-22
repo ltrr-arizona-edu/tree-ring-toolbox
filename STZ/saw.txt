@@ -1,0 +1,56 @@
+100A -- j-g truncate (JGT)
+101B -- cut off post-1900: huge suppression not general at site
+102C -- MASK-- surges and suppressions
+103A -- MASK : short segment; B much better -- SHELLY, WHY NOT DATED?
+103b -- JGT
+104A -- MASK ; truncate end; 1983 surge;  
+105A -- ? 1983 surge;  JGT
+106B - JGT
+107A - JGT; GOOD
+107B - JGT; GOOD
+108A - JGT; Weird-- does't show 1950s drought
+108B - JGT; see A
+109A - JGT,1983 end surge truncate; MASK?
+109B - JGT, 1983 EST. MASK?
+110A,B --SHORT
+111A - JGT
+111B - 1983 EST
+112A -GOOD
+112B-GOOD
+112C-GOOD
+113A-JGT; GOOD, except surge in 1830s
+113B-JGT; GOOD
+114A-JGT; EXTREME SURGE 1983; MASK
+114B-SEE A
+115A-MASK; WARPED RINGS
+115B- MAYBE OK
+116A - GOOD SHORT ONE; JGT
+116B- SEE A
+118A-GOOD SHORT ONE
+118B-SEE A
+119A - LIZ; RW DATA UNLIKE CORE; AND WHY 119B NOT IN MEAS SET?
+121A - GOOD -JGT
+122A - TYPICAL U-SHAPED SHORT- HZ detrend, but OK?
+122B - see A
+123A - MASK - surges
+123B - MASK - + trend overall
+124A - GOOD. But unsure which tree this is. I gave it no. 124. Check stats
+126A - POOR. LOW FREQ WILL BE GONE
+126B - FAIR. JGT.
+127A - GOOD. JGT
+127B - SEE A
+128A - GOOD SHORT.
+128B - SEE A
+129B - GOOD
+130A -FAIR; Increasing GT
+130B - see A
+131A - POOR. Constant increasing GT
+131b- GOOD SHORT
+1A -GOOD. JGT. Remnant.
+2A - GOOD FOR EARLY PART. JGT. TRUNCATED AFTER MID-1800S: VARIABILITY DIED
+2N - SEE A. LIZ-- IS THIS SAME AS 2A. LOOKS LIKE SAME RW? FIRE SCAR REM.
+7B - SUPERB REMNANT
+8A - GOOD REMNANT
+8B - SEE A
+8C - FAIR; STARTS AT AN INJURY SURGE
+

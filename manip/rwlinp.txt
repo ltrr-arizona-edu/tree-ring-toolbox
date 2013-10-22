@@ -1,0 +1,59 @@
+<HR>
+<A name='Rwlinp'><H3>Rwlinp</H3> </A>
+<PRE>
+ rwlinp:  convert ring-width .rwl data to indexed-vector storage form
+ rwlinp(pf1,path1,path4);
+ Last revised 3-18-97
+
+</PRE>
+ rwlinp is used to read a .rwl file of ring widths and to store the data in a .mat
+ file in a form compatible with other functions in the Tree-Ring Matlab Toolbox.
+ This converted form is an indexed vector, a column vector
+ with ring widths for one series followed by those for the next, and so forth.
+ Also stored is a matrix with years and row indices allowing retrieval
+ of individual ring-width series, and a string matrix of core ids
+
+ Indexed-vector (IV) storage is the format required by grplot.m, a function
+ for plotting multiple ring-width series on a page.
+
+<PRE>
+*** INPUT
+
+ pf1 (1 x ?)s path\filename of .rwl file
+   example:  'd:\jack\data\az033.rwl'
+ path1 (1 x ?)s path to the .rwl file.  If this arg is passed, means
+   that pf1 is the filename only
+   Example: 'd:\jack\data\'  as path1,  and   'az033.rwl' as pf1
+ path4 (1 x ?)s <optional, only if also have pf1 and path1>: path
+   for the output .mat files and .tmp files.  If no path4 as argument,
+   default is to the same directory as the .rwl files are in
+
+ Input arguments are optional.  There can be 0,1, 2, or 3 input arguments:
+  None: user prompted to clck on names of input and output files
+  One:  path\filename for the .rwl file
+  Two: first arg is the filename of the .rwl file, and the second is the path
+  Three: path for the output .mat file; this option is convenienent when user
+    wants .mat output files to go to different directories that that
+    of the source .rwl files
+
+*** OUTPUT  *****************************************
+
+ No arguments. Depending on the number of input arguments, the output .mat
+ file goes to a specified path\filename or the user is prompted to enter
+ it.  The .mat file contains three variables:
+
+   X (? x 1)i  column vector of ringwidths stored one core after another
+	  in units of hundredths of mm
+   yrs (? x 3)i start year, end year, and row index of start year of each
+	  core's ring-width series in X
+   nms (? x 8)s  identification of each core
+
+ A .tmp ascii file is also produced listing the core id, and first and last years'
+ data for each core.  This file intended for checking that rwlinp.m
+ indeed stores the ring widths properly
+
+*** REFERENCES --none
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A>

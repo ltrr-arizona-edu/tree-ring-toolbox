@@ -1,0 +1,20 @@
+
+rwlinp
+ intnan*
+ trailnan*
+
+crvfit
+ menudm2*
+ erchk
+ jdisp
+ splinep
+ monotsp1
+   splinep
+ cfspl
+ cfnegx
+ cfstrln1
+   negxpk1*
+ cfmean
+ blocdat
+
+

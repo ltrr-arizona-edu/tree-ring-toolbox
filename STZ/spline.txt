@@ -1,0 +1,40 @@
+SPLINE FIT
+
+Following Granger and Hatanaka (1964, p. 132), "it has been found to 
+be useful by the author to consider as 'trend' in a sample of size
+n all frequencies less than 1/(2n) as these will all be monotonic
+increasing if the phase is zero..."
+
+Accordingly, a reasonable choice for spline stiffness is to specify
+that the smooth curve have an amplitude frequency response of
+0.99 at a period 2n.  Appreciable variance that would be regarded as 
+trend by G&H's criterion would then not be left in the residual series
+from the spline.
+
+By trial and error, I found that the 2.00/0.99 criterion is
+about the same as a .6342/.5 or a 0.201/0.01 criterion.  The 2/0.99 
+spline would therefore have an amplitude frequency response of 0.5 at
+63.42% of the series length, and a response of 0.01 at 20.1% of the
+series length.  Some damping of variance at intermediate frequencies
+is unavoidable.  The 2/0.99 fit will have almost no effect on
+waves shorter than 20% of the series length.  Thus, applying the
+2/.99 fit to a 500-year series will not appreciably damp 100-year
+cycles.
+
+
+Option for iteratively-fit non-increasing spline written 6-20-95.
+The reason for this option is that for geometric reasons we might 
+expect a monotonic decline in ring width over the age of the tree.
+On top of this might be a slowdown in growth because of a decline
+in vigor.  Why this instead of the modified negative exponential?
+Because why should we expect the combined age weakening and
+geometric influences to jointly give a mathematical decline following
+the neg exponential?  Ring width plots often show plateaus and
+shelves in ring-width.  These features are poorly modeled by the 
+negative exponential.  Where the ring-width decline does look like a
+negative exponential, the spline can suitably mimic the neg exponential.
+When spline with 0.5 AFR at period of 2N years has positive slope
+(increasing rinwidth with time), pgm does not attempt to iterate,
+but accepts that spline and gives a warning message.
+
+

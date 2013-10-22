@@ -1,0 +1,153 @@
+Richard,
+
+I like the 'automated' mode the best, and have a few suggestions.
+
+1. It would be best in the long run to have a single run of matmet restricted
+   to handle (1) a single data type (e.g., PPT), and (2) a single type of
+	source data set format (e.g., Tucson LTRR format). The user could be
+	initially prompted for the input data set format.  From there, matmet
+	would know whether the data type is encoded (as with Tucson LTRR), and
+	would know how to transform to the desired units.  matmet would also know
+   of any idiosyncrasies of missing data coding, etc., for the source data set.
+
+2. Let's assume PPT will be wanted stored in mm, temperature in deg C, so
+   matmet will automatically do that for the user.  If the user has his
+	heart set on inches or whatever, he can easily scale back within his
+	application in matlab
+
+
+3. [.dta output] Longitude should be in map plotting convention (negative for W).  I see the
+	Fresno source files do not have W or E in the header.  So matmet knowing it
+	is working on LTRR format data, will have to prompt the user whether he
+	wants all his longitudes coded negative (warned that if so his stations 
+	should be west long).
+
+4. Since all the data output will be of one type (e.g., ppt) and units, there
+	is no need for the ?met.typ output file.  It would still be useful to retain
+	a one-line (for now) ?met.typ file however.  Only I would have it for now
+	just with two lines of text info:
+		Line 1:  the data source (as read from the prompt (1) above)
+		Line 2:  the data type (e.g., "PPT)
+
+5.  The .log, .met, and .txt output files look fine
+
+
+So, a matlab structure variable as I see it will contain a single
+data type from a single data source.  Big complicated problems could be handled
+by building multiple structures based on several runs of matmet. For example,
+the user may want to have a strucure variable with a bunch of  HCN urban
+heat island adjusted temperature stations, and another with HCN non-adjusted
+temperature data.  But let's work out the bugs and build the design first to
+handle the LTRR format met data (like Fresno)
+
+
+Cheers, Dave
+
+
+***********************************
+
+1-25-98
+
+
+Richard,
+
+
+I'm on the edge of my seat for the completion of the "Wisdom of the Spline"...
+
+
+matmet is shaping up quite well.  Below are some comments
+
+
+1.   .dta  looks good
+
+2.	  .typ  looks good
+
+3.	  .met would look ok, but I using file.lst, I read in bastard data:
+    one file is ppt and one is temperature.  We need a new file.lst and
+    corresponding input data files -- a couple of ppt stations and a couple
+	 of temperature stations
+
+4.  .log looks good, and shows that one of my files is tmp.  It would be good
+    to have matmet flag the user if it can (which probably depends on the
+source data set) that he is trying to read in data of different types
+
+5.   The menu statement "Default is automatic (no prompts)" should 
+	should say  '... no prompts for individual stations..'
+
+6.  The opening statement about "Meteorologic data are read in ... format"
+might be more general if it just says something like:
+
+-----------
+Currently acceptable data types:  P, T, PDSI .. or whatever
+Currently recognized input data sets:
+ LTRR;  Lamont Doherty;  HCN; ... or whatever
+--------------------------------
+
+Down the line, we could have a separate ascii text file that defines these
+formats for the new user
+
+
+7.  In automatic mode, can we use the "Source of Data" as a code to automatically have the program
+   use the correct input units and digits.  For example, given "LTRR",
+   and that the data type is "P",  matmet would know that the data are in 
+   inches, with 2 digits to right of an implied decimal point. For LTRR
+   data we would not know automatically that the latitude is "N" and longitude
+	"W", but for other data sets, the "N" or "W" will be in header information.
+	Thus specifying the data source and data type specifies the number of 
+	succeeding prompts needed in automatic mode.
+	
+
+Cheers, Dave
+
+**************
+3-2-98
+
+Richard,
+
+Below are responses to your question.
+Dave
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+I'm working on the changes you want to see.  On the KATI server I put
+several precip and temp files under \TMP\DMEKO\PPT and ..\TMP   Most
+of them do not have the standard header, but that is all I have for
+the time moment.
+
+1.  How can we tell reliably that data are of the same type?  Should
+we look for a character string such as "TEMP" in the header?  .. or in
+the file name?  I had assumed that the user would know and would
+assemble only data of one type.  Should we look for data patterns that
+would indicate the type of data?   I WOULDN'T GO THAT FAR. WHAT I HAD 
+IN MIND WAS THAT FOR THOSE DATASETS THAT HAVE CODE LIKE 'TEMP" IN 
+THEIR HEADER, MATMET MIGHT CHECK FOR INCONSISTENCY BY WARNING A 
+PERSON WHEN THEY TRIED, SAY, TO READ IN A MIX OF PPT AND TEMP FILES.  
+IN THE CASE OF LTTRR FORMAT DATA, 'PPT' OR 'TEMP' IS READ OFF HEADERS 
+FOR EACH SERIES.  BUT MORE GENERALLY, I WOULD PUT THE BURDERN ON      
+THE USER TO MAKE SURE HE DID NOT MIX DATASETS/DATATYPES
+
+2.  In "automatic" mode, should we have a single prompt for each
+station, showing what the program has read from the header?  It would
+then prompt for the following options:
+
+        1   File and info OK, include
+        2   File OK, need user input on info
+        3   Reject file (not to be included)
+I WOULD SAY NO.  AS THEY USED TO SAY "LET REAGAN BE REAGAN", LET'S 
+"LET AUTOMATIC BE AUTOMATIC".  THIS BECAUSE USER MIGHT BE INPUTTING 
+HUNDREDS OF STATIONS AT ONCE.
+
+
+3.  What is HCN format?  I will try to get a couple of such files, or
+can you e-mail me a few?
+I JUST MEANT THAT AS AN EXAMPLE.  ACTUALLY THERE ARE MANY TYPES OF 
+HCN DATA.  SOME HCN DATASETS HAVE BEEN REFORMATTED BY BOB L AND CAN 
+BE RETRIEVED FROM TREE.  THESE MIGHT ALREADY BE IN "LTRR" FORMAT.  
+USERS WILL UNDOUBTABLY WANT TO PROCESS  USHCN AND GLOBAL HCN DATA 
+DOWNLOADED FROM NCDC.  THE DATASETS VARY GREATLY IN FORM.  SOME HAVE 
+SEPARATE "SITE INFORMATION" FILES AND DATA FILES.  UNLESS YOUR'E 
+AMBITIOUS, I WOULD HOLD OFF ON BUILDING IN THE CODE UNTIL WE DECIDE 
+A PRIORITY OF HCN-TYPE DATA THAT MIGHT BE USED.  IF YOU ARE 
+AMBITIOUS, CHECK OUT THE NCDC PAGE AND LOOK AT THE URBAN HEAT ISLAND 
+ADJUSTED  MONTHLY USHCN TEMPERATURE DATASET.
+

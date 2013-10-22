@@ -1,0 +1,229 @@
+function [xout,yrout,yrsagain]=measpart(xin,yrin,yrstart,yrsagain)
+
+% yrsagain:  empty, or a rv of years flagged to require re-measuring; on return, empty if remeasured
+%
+%*** NOTES
+%
+% NaN rows in xin:  The input time series matrix generally has leading NaN rows to facilitate starting measurements before
+% the start of existing measurements
+
+close all;
+clc;
+
+% Set some year information
+yrorigin=yrin(1);  % first year of the input time series matrix (tsm)
+yr=yrin; % year vector for the input tsm
+yrthis=yrstart; % start year for measurement
+
+% Store the width components separatelt: total, early, late width
+x=xin(:,3);
+x1=xin(:,1);
+x2=xin(:,2);
+
+kbegin=menu('Choose which part of first ring to begin measuring',...
+    'Earlywood',...
+    'Latewood');
+if kbegin==1;
+    kwood=1; % earlywood==1, latewood==2
+else;
+    kwood=2;
+end;
+
+
+
+% Create serial port object
+%instrreset; % Just in case, make sure serial port not assigned to some object
+scheck=instrfind;
+if ~isempty(scheck);
+    fclose(scheck);
+    delete(scheck);
+    clear scheck;
+end;
+obj=serial('com1');
+
+% Set input buffer so that read completes when one measurement is received
+% set(obj,'InputBufferSize',16);
+
+% Open serial port and set parameters
+set(obj,'Parity','none','StopBits',1,'DataBits',8,'BaudRate',9600','terminator','CR','TimeOut',600);
+fopen(obj);
+
+% Initialize counters and while control
+ix = yrthis-yrorigin+1; % index into x, x1, x2 for storing data for yrthis
+n=0;
+count=0; % # of bytes returned by fgets
+reclen=15; % input string length
+kwh1=1; % While control
+irev=0; % flag for crank reversed. 0==not yet reversed
+
+% Measurement while loop
+while kwh1==1;
+    while count==0; % Ready to get a measurement; either this is first measurement, or input has been flushed
+        % Read serial port
+        if n==0; % n==0 before start of each reading and after reversing crank 
+            %uiwait(msgbox({'Initialize segment as follows:','  * Position the stage',...
+                    %'  * press RESET -- sets Quick-Check display to zero',...
+                    %'  * press PRINT -- marks starting point for measuring'},'Message','modal'));
+        end;
+        [g,count] = fgets(obj); % store measurement (a string) in g 
+        n=n+1;
+    end;
+    if count>=reclen;  % One measured value is in buffer
+        %flushinput(obj);   % flush the current measurement from the buffer --> makes count==0
+        i1=findstr(g,'mm');  % mm string comes after measured value from QUICKCHECK
+        
+        if~isempty(i1); % "mm" string found; data has been received from QuickCheck
+            % Cull the display value g (a cumulative reading) and convert it from string to numeric
+            isp=i1-1;
+            igo=isp-7;
+            d = g(igo:isp);
+            dnum = str2num(d);
+            if n~=1; % if not the first reading
+                if dnum<0;  %
+                    if irev==1; 
+                        irev=0;
+                    else;
+                        %instrreset;
+                        fclose(obj);
+                        delete(obj);
+                        clear obj;
+                        error('Quick-Check Display is negative-- invalid except before first ring measured');
+                    end;
+                end;
+            else; % first click, must reset velmex before this
+                if dnum~=0;
+                    %instrreset;
+                    fclose(obj);
+                    delete(obj);
+                    clear obj;
+                    error('Must reset Quick-Check to 0 and Press PRINT to start measuring any segment');
+                else;
+                    disp('OK: crank and click to record measurements');
+                end;
+            end;
+            dstr=num2str(dnum,'%8.3f');
+        else;
+            %instrreset;
+            fclose(obj);
+            delete(obj);
+            clear obj;
+            error(['No  mm string']);
+        end;
+        
+        c(n)=dnum; % cumulative counter
+        nc=length(c);
+        if n>1;
+            w=c(n)-c(n-1); % measurement is difference of cumulative reading
+            if  w<0; % negative delta -- meaning you reversed crank on velmex
+                if kwood==2;
+                    disp(str1);
+                end;
+                irev=1;
+                kmen4=menu('Choose','Stop measuring',...
+                    'Skip to a different part of series');
+                switch kmen4;
+                case 1;
+                    disp('OK, Measurement stopped');
+                    kwh1=0;
+                case 2; %  skip to a differet part
+                    kwh2=1;
+                    while kwh2==1;
+                        prompt={'Enter start year of segment to begin remeasuring):'};
+                        def={int2str(yrthis+2)};
+                        dlgTitle='Input year';
+                        lineNo=1;
+                        answer=inputdlg(prompt,dlgTitle,lineNo,def);
+                        yrresume = str2num(answer{1});
+                        if yrresume<yrorigin | yrresume>max(yrin);
+                            uiwait(msgbox({'Year out of range; pick another!',...
+                                    'If desired year out of range, increase maxlen or nyrlead',...
+                                    'in calling function rwmeas.',...
+                                    'Can change at openg prompt or the hardcoded defaults'},'Message','modal'));
+                        else;
+                            yrthis=yrresume;
+                            kwh2=0;
+                        end;
+                    end; % while
+                    % Resume at early or latewood
+                    kwood=menu('Resume measuring at ','Earlywood','Latewood');
+                    ix=yrthis-yrorigin+1;
+                    n=0;
+                    count=0;
+                otherwise;
+                end;
+                
+            elseif   w>=0;  % measurement is non-negative
+                
+                irev=0;
+                if kwood==1;
+                    x1(ix)=w;
+                    kwood=2;
+                else;
+                    x2(ix)=w;
+                    kwood=1;
+                end;
+                xtot=x1(ix)+x2(ix);
+                str1=num2str([yrthis x1(ix) x2(ix) xtot]); 
+                if kwood==1; % have just finished measuring latewood for yrthis
+                    beep;
+                    disp(str1);
+                    if rem(yrthis,10)==0;
+                        pause(1);
+                        beep;  
+                    end;
+                    % Clear remeasure flag if year was flagged for re-measurement
+                    if ~isempty(yrsagain);
+                        idelete=find(yrthis==yrsagain);
+                        yrsagain(idelete)=[];
+                        if isempty(yrsagain);
+                            yrsagain=[];
+                        end;
+                    end;
+                    yrthis=yrthis+1;
+                    ix=yrthis-yrorigin+1;
+                   
+                else;  % just finished storing the earlywood
+                   
+                    
+                end; % if kwood==1;
+                
+            end; % elseif on  w
+        else; % if n==1;
+        end; % if n>1
+    end; % if count==16
+    count=0;
+end; % while kwh1
+
+x=x1+x2;
+
+X=[x1 x2 x];
+
+mx = size(X,1);
+
+% Strip trailing NaN
+L=(all(isnan(X')))';
+h=ones(mx,1);
+h(L)=NaN;
+h=trailnan(h);
+mh=length(h);
+X=X(1:mh,:);
+yrin=yrin(1:mh);
+
+% strip leading NaN
+h=flipud(h);
+h=trailnan(h);
+mh=length(h);
+X=flipud(X);
+X=X(1:mh,:);
+X=flipud(X);
+yrin=flipud(yrin);
+yrin=yrin(1:mh);
+yrin=flipud(yrin);
+
+xout=X;
+yrout=yrin;
+
+%instrreset;
+fclose(obj);
+delete(obj);
+clear obj;

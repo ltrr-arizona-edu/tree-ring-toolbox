@@ -1,0 +1,167 @@
+function [EX,P] = arres
+
+% USAGE : [EX,P] = arres
+% This function gets AR residuals of core indices.
+% Operates on IX matrix. User selects the .mat matrix on screen.
+% Models core indices as AR processes. Puts AR residuals into EX and
+% AR fit parameters and statistics into P matrix.
+% Optionally adds EX and P to the original .mat matrix.
+%
+% INPUTS	: NONE
+%
+% OUTPUTS	: EX (n x 1) - Residual vector from AR fit (same 
+%				length as IX)
+%		  P (? x 16) - Matrix containing AR parameters and 
+%			        other statistics
+%_______________________________________________________________
+
+
+
+% Prompt for the .mat file name
+
+% Get the .mat filename interactively
+flmat=uigetfile('*.mat','.MAT filename ?');
+
+% Check if the mat file exists in the workspace
+if ~(exist('X') & exist('IX')),
+  eval(['load ',flmat]);
+end
+
+[ns,dum1]=size(nms);
+
+% Specify the desired time series matrix
+sx=shlmnu('Pick Series','X','IX','Other');
+
+% Find the total # of blocked segments
+[rs cs]=size(S);
+dsm=0;
+for j=1:rs,
+  dsm=dsm+length(find(S(j,cs-9:cs)));
+end
+tblkn=dsm/2;
+   
+% Initialize the P matrix
+rpn=ns+tblkn;
+P=ones(rpn,16)*NaN;
+pidx=0;
+
+% Maximum model order
+nnmx=5;
+
+% Initialize EX
+EX=ones(length(X),1)*NaN;
+
+% Prompt if user wants to view the graph
+gmnu=shlmnu('Select','View graph','Don''t view');
+
+% Loop through for P and ex
+for scid=1:ns,
+ if S(scid,1)~=0,
+  yrv=(yrs(scid,1):yrs(scid,2))';
+  if sx==1,
+    xv=X(yrs(scid,3):yrs(scid,3)+yrs(scid,2)-yrs(scid,1));
+  elseif sx==2,
+    xv=IX(yrs(scid,3):yrs(scid,3)+yrs(scid,2)-yrs(scid,1));
+  else
+    jh=jdisp('Please return to command window for input');
+    pause(1);
+    close(jh);
+    snm=input('Please enter the matrix name = ','s');
+    if exist(snm),
+      eval(['xv=',snm,'(yrs(scid,3):yrs(scid,3)+yrs(scid,2)-yrs(scid,1));']);
+    else
+      jh=jdisp('Specified matrix does not exist. Please rerun the program');
+      pause(2);
+      close(jh);
+      return;
+    end
+  end
+
+  lzn=isnan(xv);
+  zn=xv;
+  zn(lzn)=[];
+  lzo=zeros(length(lzn),1);
+  for k=1:length(lzn)-1,
+    if lzn(k)~=lzn(k+1),
+      lzo(k)=k;
+    end
+  end
+  lz=lzo;
+  lz(find(lzo==0))=[];
+
+  if ~isnan(xv(1)),
+    lz=[0;lz];
+  end
+  if ~isnan(xv(length(xv))),
+    lz=[lz;length(xv)];
+  end
+ 
+  for k=1:2:length(lz)-1,
+   xvt=xv(lz(k)+1:lz(k+1));
+   pidx=pidx+1;
+   if length(xvt)>=20,
+    P(pidx,1)=scid;
+    P(pidx,2)=yrv(lz(k)+1);
+    P(pidx,3)=yrv(lz(k+1));
+
+    % Selecting the model order
+    xvtt=detrend(xvt,0);	      % Remove the mean from the series
+    v=arxstruc(xvtt,xvtt,[1:nnmx]');
+    nn=selstruc(v,'aic');
+
+    P(pidx,4)=nn;
+
+    th=ar(xvtt,nn);
+    temex=resid1(xvtt,th);
+
+    %P(pidx,5)=var(temex)/var(xvtt);
+    P(pidx,5)=th(1,1)/var(xvtt);
+    P(pidx,6:5+nn)=th(3,1:nn);
+
+    temex=temex+mean(zn)-mean(temex);
+    temex(1:nn)=ones(nn,1)*NaN;
+    EX(yrs(scid,3)+lz(k):yrs(scid,3)+lz(k+1)-1)=temex;
+
+    [r,SE2,r95]=acf(zn,3);
+    P(pidx,11:13)=r;
+    [phi,SE2] = pacf(zn,3);
+    P(pidx,14:16)=phi;
+
+    if gmnu==1,
+     % Plot the rw data with scid core ID
+     hf0=figure('Color','w','Units','normal');
+     yrvt=yrv(lz(k)+1:lz(k+1));
+     plot(yrvt,xvt,'b',yrvt,temex,'r--');title(['AR Modeling of ',nms(scid,:)]);
+     ht1=text('Position',[0.1 0.9],'String',['AR order = ',num2str(nn)],...
+         'Unit','Normalized');
+     ht2=text('Position',[0.7 0.9],'String','Dashed - Residual','Unit','Normalized');
+     ht3=text('Position',[0.7 0.85],'String','Solid - Original','Unit','Normalized');
+     xlabel('Year');ylabel('Index');
+     jd=jdisp('Hit return to continue',[0.05 0.3 0.7 0.1]);
+     pause;
+     close(jd);
+     close(hf0);
+    end
+   else
+    jd=jdisp(['This segment of ',nms(scid,:),' is shorter than 20. Can''t ',...
+        'process. NaN''s will appear in the P matrix']);
+    pause;
+    close(jd);
+   end
+  end
+ else
+  pidx=pidx+1;
+ end		% End of if loop
+end
+
+nsv=usinp('ADD P and EX matrices to the MAT file? ');
+if nsv,
+  ofmat=uiputfile('*.mat','.MAT filename ?');
+  eval(['save ',ofmat,' P ',' EX ',' IX ',' X ',' S ',' yrs ',' nms ']);
+end
+
+close all;
+
+
+% End of file
+

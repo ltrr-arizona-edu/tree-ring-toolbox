@@ -1,0 +1,79 @@
+function urbanget
+% urbanget:  get .mat files of urban heat island adjusted hcn monthly tmp
+% CALL: urbanget
+%
+% Meko 6-11-97
+%
+%
+%*********************  IN ******************************
+%
+% User is prompted for filenames of the station list 
+% (typically stnlist.txt) and the main data file (urban.mea)
+%
+%********************* OUT *****************************
+%
+% Individual .mat files are produced for each station in 
+% stnlist.txt.  
+%
+%
+%*************************  NOTES ********************
+%
+% See howto\hcntget1.txt for description of the stnlist.txt and
+% urban.mea files.
+
+
+% Allow for max of 1500 files
+bb=blanks(5);
+CN = repmat(bb,1500,1); % will hold names
+ID = zeros(1500,1); % will hold station ids
+
+
+
+% Open station list file
+[file1,path1]=uigetfile('stnl*.txt','Station list file');
+pf1=[path1 file1];
+fid1=fopen(pf1,'r');
+
+
+% Load data file
+[file2,path2]=uigetfile('urban.mea','Input data file');
+pf2=[path2 file2];
+eval(['load ' pf2]);  % data will be in matrix 'urban'
+
+
+% Find out how many stations to get, store their ids and output file names
+k1=1;
+nfiles=0;
+while k1;
+	c=fgetl(fid1);
+	if ~feof(fid1) & length(c)>50;
+		nfiles=nfiles+1;
+		% Output file name begins after first whitespace
+		i1 = find(isspace(c))+1;
+		i1=i1(1);
+		CN(nfiles,:)=c(i1:(i1+4)); % store first part of output file name
+		ID(nfiles)=str2num(c(1:6));
+	end
+end
+
+
+fclose(fid1);
+
+
+% Get data for each station
+
+for n = 1:nfiles;
+	L=urban(:,1)==ID(n);
+	Z = urban(:,2:14);
+	eval(['save ' CN(n,:) ' Z']);
+end
+
+
+		
+
+
+
+
+
+
+

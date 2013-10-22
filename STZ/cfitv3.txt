@@ -1,0 +1,68 @@
+This chronology is intended for inferring moisture variations at
+multi-decadal time scales. Ringwidths were detrended by the ratio
+method, as described by Cook et al. (1990), using a 200-year
+cubic smoothing spline as the default detrending curve. The
+amplitude of the frequency response of this spline is 0.50 at a
+wavelength of 200 years. Time series plots showed ring-width
+variations at wavelengths longer than 200 years were largely
+asynchronous across trees. A two-pass approach was taken to
+detrending. The first pass was automatic initial detrending by
+the default curve choice. The second pass was optional manual
+over-riding of the default choice from viewing of superposed time
+series plots of smoothed indices from multiple trees. This manual
+step might include truncating an individual ring-width series,
+deleting it from the chronology, or modifying its curve fit by
+selecting a more suitable detrending line (e.g., a stiffer spline
+(Cook and Peters 1981), or a horizontal line instead of a
+straight line with a negative slope)
+
+The final selected detrending curves are listed in table below.
+Note that the table lists only those ring width series actually
+used in the chronology; additional ring-width series, masked out
+in the chronology building, might be included in the .rwl data
+file sent to the ITRDB. After the trend line was fit, core
+indices were computed by dividing the ring-width in each year by
+the value of the fitted trend line. Core indices were then
+averaged to get tree indices, and tree indices were averaged to
+get a site index, or standard chronology. Averaging of tree
+indices for a given year was by the arithmetic mean if fewer than
+6 trees; otherwise by a bi-weight mean. The residual chronology
+was computed in same way as the standard chronology except that
+autoregressive residuals of core indices were used in place of
+core indices. The "sample size" listed in attached ".crn" files
+is the number of TREES sampled each year, not the number of
+cores.
+                                                             
+N Core    Fit Period    Curve fit    Persistence             
+ 1 FRY01A  1813  1992     CS(1058 yr)  AR(2)  0.24           
+ 2 FRY01B  1838  1992     CS(1093 yr)  AR(1)  0.38           
+ 3 FRY02A  1786  1992     CS(199 yr)   AR(2)  0.09           
+ 4 FRY02B  1833  1992     CS(1029 yr)  AR(2)  0.07           
+ 5 FRY03A  1743  1992     CS(663 yr)   AR(1)  0.25           
+ 6 FRY03B  1803  1992     CS(105 yr)   AR(1)  0.16           
+ 7 FRY04A  1640  1801     CS(682 yr)   AR(1)  0.08           
+ 8 FRY04D  1642  1950     CS(1023 yr)  AR(1)  0.29           
+ 9 FRY04E  1828  1930     CS(118 yr)   AR(1)  0.25           
+10 FRY05A  1695  1992     CS(182 yr)   AR(2)  0.19           
+11 FRY05B  1617  1950     CS(167 yr)   AR(2)  0.17           
+12 FRY06B  1738  1992     CS(204 yr)   AR(1)  0.19           
+13 FRY06C  1659  1992     CS(217 yr)   AR(1)  0.13           
+14 FRY07A  1805  1992     CS(400 yr)   AR(1)  0.11           
+15 FRY07B  1827  1992     CS(166 yr)   AR(1)  0.06           
+16 FRY09A  1810  1992     CS(93 yr)    AR(1)  0.11           
+17 FRY09B  1791  1992     CS(147 yr)   AR(1)  0.11           
+18 FRY10A  1806  1992     CS(922 yr)   AR(1)  0.11           
+                                                             
+Fit Period = period of ring width used in curve fitting      
+  * = differs from full available period of ring width data  
+Curve Fit = type of model used to detrend ring width         
+  NE=modified negative exponential                           
+  SL=least-square-fit straight line                          
+  HL=horizontal line at mean of ring width for fit period    
+  CS=cubic smoothing spline                                  
+     (Wavelength of 50% frequency reponse in parentheses)    
+Persistence = autoregressive prewhitening information        
+  AR(q) = order q of autoregressive model fit to core index  
+  nn  = decimal proportion of core-index variance due to     
+     persistence; computed as 1-R, where R is the ratio of   
+     variance of residual index to variance of standard index

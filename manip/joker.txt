@@ -1,0 +1,321 @@
+<HR>
+<A name='grplot'><H3>grplot</H3> </A>
+<PRE>
+ grplot: multiple time series plots of ring width on a page
+ grplot;
+ Last revised 4-15-99
+
+</PRE>
+ grplot plots "groups" of ring-width series, several to a page. The plots
+ are similar to what used to be produced by the mainframe "pageplot" program.
+ Up to eight series can be plotted per page.  The user can control which
+ series are plotted and in what order. The default is in order as the
+ series are stored in the original .rwl file. A useful option is to select
+ ordering by start year of the series.<P>
+
+ The intended use of grplot is as an aid in deciding on the form of the
+ growth curve to use in ARSTAN or other standarization programs.
+ Low-frequency ring-width fluctuations not shared by different trees are
+ spotted in the plots. It's usually a good idea to remove such fluctuations in
+ standardizing. <P>
+
+ grplot can optionally be run in two modes:  "single" or "batch".  Single mode
+ applies to a set of ring-width series from one site.  Single mode is most
+ interactive (with zoom options) and is the most likely mode. Batch mode applies to
+ multiple files of ring-width series, perhaps from several sites. Batch mode is
+ not interactive, but is useful if you have to plot series from many sites.  In
+ batch mode, .ps files, one per site, for later printing and viewing.<P>
+
+<PRE>
+*** IN ******************************************************
+
+ No input arguments
+
+ User prompted for various options, and to point to files for input and
+ output
+
+*** OUT *******
+
+ No output args.
+
+ File output is optional, and consists of one or more postscript (.ps) files, one for
+ each input .mat ring-width file.  The user can specify the filename in interactive
+ mode.  In batch mode, the .ps suffix is assigned to the same prefix as the input
+ .mat file containing the ring-width file.
+
+ In "single" mode you can view the figure windows as the program runs and afterwards.
+ In "batch" mode, figure windows are not saved, but are overwritten from on
+ ring-width file to ring-width file.  But in batch mode, have the plots stored in
+ .ps files for later plotting.
+
+*** REFERENCES -- none
+
+*** UW FUNCTIONS CALLED ******************************
+
+ eightplt.m - plots up to 8 sets of axes on page
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='eightplt'><H3>eightplt</H3> </A>
+<PRE>
+ eightplt: up to eight plotes of ring width per page; utility called by grplot.m
+ eightplt(datin);
+ Last revised 4-12-99
+
+</PRE>
+ A utility plotting function called by grplot.m.  Most users will not need to
+ call eightplt.m
+
+<PRE>
+*** IN
+ datin{} -- contents described later
+
+***  OUT
+ No output args -- just the plots, ma'am.
+
+*** UW FUNCTIONS CALLED -- none
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='rwlinp'><H3>rwlinp</H3> </A>
+<PRE>
+ rwlinp:  read .rwl-file ring widths and store in indexed-vector format in a .mat file
+ rwlinp(pf1,path1,path4);
+ Last revised 3-18-97
+
+</PRE>
+ This is a way to get ring-width data into Matlab if the data is in the
+ notorious ".rwl" format.  Index-vector form is simply each ring-width series
+ stacked one after another in a single column vector.<P>
+
+ Also stored is a matrix with years and row indices that allows retrieval of
+ individual ring-width series from the I-V, and a string matrix of core ids
+ in the same order as the ring-width series are stored. <P>
+ Indexed-vector (I-V) storage is expected by several other functions in the
+ tree-ring toolbox. An example is grplot.m, a function
+ for plotting multiple ring-width series on a page.
+
+<PRE>
+*** INPUT
+
+ pf1 (1 x ?)s path\filename of .rwl file
+   example:  'd:\jack\data\az033.rwl'
+ path1 (1 x ?)s path to the .rwl file.  If this arg is passed, means
+   that pf1 is the filename only
+   Example: 'd:\jack\data\'  as path1,  and   'az033.rwl' as pf1
+ path4 (1 x ?)s <optional, only if also have pf1 and path1>: path
+   for the output .mat files and .tmp files.  If no path4 as argument,
+   default is to the same directory as the .rwl files are in
+
+ Input arguments are optional.  There can be 0,1, 2, or 3 input arguments:
+  None: user prompted to clck on names of input and output files
+  One:  path\filename for the .rwl file
+  Two: first arg is the filename of the .rwl file, and the second is the path
+  Three: path for the output .mat file; this option is convenienent when user
+    wants .mat output files to go to different directories that that
+    of the source .rwl files
+
+*** OUTPUT  *****************************************
+
+ No arguments. Depending on the number of input arguments, the output .mat
+ file goes to a specified path\filename or the user is prompted to enter
+ it.  The .mat file contains three variables:
+
+   X (? x 1)i  column vector of ringwidths stored one core after another
+	  in units of hundredths of mm
+   yrs (? x 3)i start year, end year, and row index of start year of each
+	  core's ring-width series in X
+   nms (? x 8)s  identification of each core
+
+ A .tmp ascii file is also produced listing the core id, and first and last years'
+ data for each core.  This file intended for checking that rwlinp.m
+ indeed stores the ring widths properly
+
+*** REFERENCES --none
+
+*** UW FUNCTIONS CALLED ******************
+
+ intnan.m  -- checks for internal NaNs in a vector
+ trailnan.m -- lops off trailing NaNs from a vector
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='rw2tsm'><H3>rw2tsm</H3> </A>
+<PRE>
+ rw2tsm: ring-width series to time series matrix
+ [X,yr,nms]=rw2tsm(path1,pf2,yrrange);
+ Last revised 3-5-99
+
+</PRE>
+ Reads ".rw files" of ring width from two or more cores and puts the ring-width
+ series in a time series matrix (tsm).  The tsm by default will cover the years
+ from first year of earliest core through last year of most recent core.  The user
+ can optionally specify that the tsm is to cover some specific time period.
+
+ The intended use is as a utility function to input the weirdly-formatted
+ .rw ring-width data into Matlab for subsequent analysis.  The output arguments
+ include series labels that can be used to identify series (e.g., in labeling plots).
+
+ The user must prepare an ascii file with a list of .rw filenames before running
+ rw2tsm.  The tsm will have the ring-width series in the same order as the list
+ of .rw files.
+
+<PRE>
+*** IN ***********************
+
+ path1 (1 x ?)s  path to .rw files  (e.g., c:\projs\ai4\treedata\)
+ pf2 (1 x ?)s path\filename of file holding names of .rw files (one name pre line)
+ yrrange(1 x 2)i  <optional> first and last year of desired time series matrix
+
+*** OUT ************************
+
+ X (mX x nX)r ring widths for the nX series; each column a different series
+ yr (mX x 1)i  year vector for X
+ nms (nX x ?)s  string matrix of prefixes of .rw files. In same order as
+   columns of X
+
+*** REFERENCES-- none
+
+*** UW FUNCTIONS CALLED
+
+ rwread3 -- read individual .rw file
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='intnan'><H3>intnan</H3> </A>
+<PRE>
+ intnan: check for internal NaN in a vector
+ m=intnan(x)
+ Last revised 5-5-96
+
+</PRE>
+ Used to check climatic or tree-ring series to make sure series continuous
+ over period for calibration
+
+<PRE>
+*** INPUT ********************
+
+ x(? x 1)r or ((1 x ?)r  -- a time series
+
+*** OUTPUT ********************
+
+ m(1 x 1)L   1 if x has imbedded NaN, 0 otherwise
+
+*** REFERENCES
+
+
+*** UW FUNCTIONS CALLED -- none
+
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='rwread3'><H3>rwread3</H3> </A>
+<PRE>
+ rwread3: reads a single .rw file
+ [X,guy,day,pf1]=rwread3(path1,file1);
+ Last revised 2-15-99
+
+</PRE>
+ rwread3.m is a low-level function called by rw2tsm.m and other
+ UW functions.  rwread3.m reads a file of data in ".rw" format,
+ and stores the result in a matrix with the year as column 1 and
+ ring width in column 2
+
+<PRE>
+*** INPUT ***********************
+
+ path1 (1 x ?)ch path to .rw file
+ file1 (1 x ?)ch filename of .rw file
+
+
+*** OUTPUT ************************
+
+ X (mX x 2)r year in col 1, ring width in col 2
+ guy (1 x ?)ch initials of measurer
+ day (1 x ?)ch day measured
+ pf1 (1 x ?)ch path\filename of the .rw file
+
+*** REFERENCES -- none
+*** UW FUNCTIONS CALLED --	 none
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='seaspt'><H3>seaspt</H3> </A>
+<PRE>
+ seaspt:  seasonalize a monthly precipitation or temperature series
+ F = seaspt(A,begmo,endmo,k);
+ Last revised: 4-30-99
+
+</PRE>
+ Converts monthly climatic data to seasonal data. Many climatic data sets are
+ organized in 13-column matrices, with the year as column 1, January data as col 2,
+ ..., and December data as column 12.  Summing over columns gives one form of
+ "annual" total tuned to the calendar year.  But say you want a time series
+ of 12-month-total precipitation "tuned" to the growth year of trees.  Maybe
+ the total from September of the previous year through August of the current
+ year. Or maybe you simply want a "cool season" total of precipitation from
+ November of the previous year through April of the growth year.<P>
+
+ seaspt.m works on monthly data that should be summed (e.g., precipitation) and on data
+ that should be averaged over months (e.g., temperature, or PDSI).
+ Before calling seaspt.m, you should have the monthly climate data in a
+ 13-column numeric matrix within Matlab, with the year as column 1. It's
+ best that this missing-data be coded as NaN in this matrix.  That way,
+ any seasonalized value relying on the missing data for any month will
+ result in a missing value (NaN) for the seasonal total
+
+<PRE>
+*** INPUT
+
+ A(? x 13)r  monthly ppt or tmp; year in col 1; Jan data in col 2 ... Dec in col 13
+ begmo (1 x 1)i Begining month of season. Jan=1, Dec=12.
+ endmo (1 x 1)i Ending month of season.   Jan=1, Dec=12.
+ k (1 x 1)i option for type of variable
+   k=1, A is ppt, runoff, effective ppt, or any variable summed over months
+   k=2, A is temperature, pdsi, Z-index, or soil moisture
+   Only difference is
+		seasonalized ppt, etc,  is computed as sum over months,
+     temperature, etc., is computed as average over months.
+
+***  OUTPUT ARGUMENT
+ F (? x 2)  Seasonalized ppt or temp.  First col is year of ending month
+		of seasonal grouping.  Say begmo=11, endmo=1, and yrs=[1930 1950].
+		Then beginning year of seasonalized series (Nov-Jan) is 1931, which
+		is based on Nov and Dec of 1930 and Jan of 1931.
+
+
+*** REFERENCES -- none
+*** UW FUNCTIONS CALLED--none
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A><HR>
+<A name='trailnan'><H3>trailnan</H3> </A>
+<PRE>
+ trailnan: remove any trailing NaN's from a vector
+ x=trailnan(x);
+ Last revised: Meko 2-28-97
+
+</PRE>
+ trailnan is a utility function used by rwlinp.m and other functions. Most users
+ will not need to call trailnan in their own code
+
+<PRE>
+*** INPUT
+
+ x (1 x ?)r or (? x 1)r vector, usually a time series
+
+*** OUTPUT
+
+ x (? x 1)r  the same vector, but with any trailing NaN's removed
+
+*** REFERENCES -- none
+*** UW FUNCTIONS CALLED -- none
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A>

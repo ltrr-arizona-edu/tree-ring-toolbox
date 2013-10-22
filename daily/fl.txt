@@ -1,0 +1,4 @@
+daymin1 -- n-ay-minimum flow each year in a specified time window
+dayusgs1 -- read a usgs-style daily flow file, convert and store data 
+day2tsm1 -- utility program called by dayusgs1 to convert a block of
+	data

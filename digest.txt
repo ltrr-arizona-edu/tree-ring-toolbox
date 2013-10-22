@@ -1,0 +1,2642 @@
+
+Date sent:        Thu, 30 Nov 1995 09:54:55 -0500 (EST)
+From:             Carolyn Romano <cromano@mathworks.com>
+Subject:          The MATLAB Digest Oct/Nov95
+Forwarded to:     dmeko@ltrr.arizona.edu
+To:               matlab-digest@mathworks.com
+Send reply to:    batgirl2@mathworks.com
+
+             The MathWorks MATLAB Digest
+                    Oct/Nov 1995
+                  Volume 3, number 9
+
+=====================
+Table of Contents
+=====================
+        o MATLAB Conference Summary
+        o New Product Announcements
+        o Upcoming Conferences and Tradeshows
+        o Q & A
+              o How to incorporate greek letters in MATLAB graphs?
+              o How to create a surface of revolution in MATLAB?
+        o Carolyn's Desk -- Windows 95 with MATLAB
+        o New Files on the FTP Site
+        o New Internet Service
+  -----------------------------------------------------------
+ The MathWorks MATLAB digest is a monthly electronic newsletter
+ sent to subscribing users. To add yourself to the mailing
+ list, send e-mail to subscribe@mathworks.com (please include
+ your siteid or license number). To remove yourself, send
+ e-mail to unsubscribe@mathworks.com. 
+
+ Send submissions/questions/comments to digest@mathworks.com.
+
+   Carolyn Romano             FTP: ftp.mathworks.com [144.212.100.10]
+   The Mathworks, Inc.        WWW: http://www.mathworks.com
+   cromano@mathworks.com      INFO: info@mathworks.com  
+
+  -----------------------------------------------------------
+
+  
+
+ 
+
+New Product Announcements
+
+        o MATLAB Compiler/MATLAB C Math Libraries
+        o Higher Order Spectral Analysis Toolbox 2.0
+        o DSP Blockset 1.0a
+
+
+        o Fixed-income pricing, yield and sensitivity analysis
+        o Cash flow evaluation and accounting
+        o Equity derivatives pricing and analysis
+        o Mean-Variance portfolio analysis tools
+        o Date functions
+        o Graphic and cash formats
+
+  Advanced toolbox functions require the Optimization and Statistics
+  Toolboxes.
+
+  SIMULINK is recommended for Monte Carlo and non-stochastic
+  simulations.
+
+  Visit our new MATLAB for Finance web page off of the MathWorks home page
+  or directly through:
+
+  http://finprod.mathworks.com
+
+  For pricing, platform availability, and other sales information,
+  e-mail to:
+
+  finance@mathworks.com
+
+
+*****************
+  Higher Order Spectral Analysis Toolbox 2.0
+
+  Currently shipping but only available for the MAC and PC platforms.
+  The CD-ROM update is expected but no date as of yet.
+
+  BACKGROUND
+  The toolbox contains specialized tools for signal processing with
+  higher-order spectra. It provides access to algorithms at the
+  forefront of signal processing technology. Because many real-world
+  signals are non-Gaussian, conventional estimation methods such as the
+  autocorrelation or power spectrum do not use all the information available
+  in those signals.   Higher-order spectra, which are defined in terms
+  of the higher-order moments or cumulants of a signal, contain this
+  additional information. 
+
+  Higher-order spectra have many useful properties.  For example, they
+  can suppress additive colored Gaussian noise of unknown power
+  spectrum; identify nonminimum phase systems, and detect and
+  characterize nonlinear properties in signals.
+
+  What's New:
+        o Cross-cumulant and cross-bispectrum estimation
+        o Bicoherence and cross-bicoherence estimation
+        o Cumulant methods for AR and MA model order determination  
+        o Second-order Volterra model estimation  
+        o Impulse response estimation using the cross-bicepstrum 
+        o Theoretical bispectrum and trispectrum of a linear process
+        o Higher-order time-frequency distributions, including
+          second-order Wigner Spectra, sliced Wigner Bispectra and Wigner
+          Trispectra, and optional Choi-Williams smoothing.
+
+  Update Price:. $195 Commercial, $95 Educational
+
+
+
+
+ 
+  
+  -----------------
+Question: How to incorporate Greek letters in MATLAB graphs?
+
+  Can anyone tell me how to write Greek letters delta, and omega with
+  subscripts and superscripts (like in LaTex \delta_{1,n}) in xlabel, ylabel?
+
+  Thanks in advance.
+
+  Swapan Saha
+  ssaha@iastate.edu
+
+Answer from Doug Schwarz:
+
+  My Styled Text Toolbox will do this.  Use
+
+      sxlabel('\delta_{1,n}')
+
+  It is available from
+
+  ftp://ftp.mathworks.com/pub/contrib/graphics/stextfun/
+
+  Doug Schwarz
+  Eastman Kodak Comapny
+  schwarz@kodak.com
+
+Answer from Carolyn Romano:
+
+  There is also a way in MATLAB to use the hexidecimal equivalant of
+  the Greek characters you want to incorporate.
+
+  To place Greek characters in a plot, use the symbol font.  For
+  example:
+
+        plot(1:10)
+        text(5,5,'a*b','FontName','symbol')
+
+  This will place "alpha times beta" in the plot.
+
+  To determine the character mapping of the symbol font, use chart.m.
+  chart.m displays the hexidecimal values for the characters in the
+  symbol font.  It is available via anonymous ftp.
+
+    ftp://ftp.mathworks.com/pub/tech-support/library/graphics/chart.m
+
+  Below is an example of how to use it:
+
+        chart('symbol')
+        % Find the last value for the characters you want to use.
+        % For this example, I grabbed alpha(16) and beta(26).
+        X_coordinate = [6 6];  % [alpha beta]
+        Y_coordinate = [1 2];  % [alpha beta]
+        a = setstr(16*X_coordinate(1)+Y_coordinate(1));
+        b = setstr(16*X_coordinate(2)+Y_coordinate(2));
+        str = [a,'*',b];
+        plot(1:10)
+        text(5,5,str,'FontName','symbol')
+
+  -----------------
+Question: How to create a surface of revolution in MATLAB?
+
+  I created a data file, which is a simulated result, by using MATLAB.
+  I plot the data in x-y coordinate system.
+  Now I want to plot the data by using the SURF (3-D plotting) by rotating the
+  data 360 degrees with 5 degree steps.
+  For example, if I rotate 360 degrees with 5 degree steps for data generated
+  by the sin(x) function, the data becomes a cone type function.
+  How can I do it ?
+
+  Thanks,
+  Thomas Y. Lee (5L78LEEY@VMS.CSD.MU.EDU)
+
+Answer from Kris Geising:
+
+  You can create a surface of revolution in MATLAB by 1) using the 'cylinder'
+  command; or 2) exploiting polar coordinates.
+
+    % First example, part 1:
+
+    % create a Gaussian curve
+    a = exp(-([-2:.2:2]).^2);
+    % create the surface of revolution; 20 pts around each radius
+    [x,y,z] = cylinder(a, 20);
+    % display the surface
+    h = surf(x,y,z);
+
+  You may want to rotate this object.  In this case, you can use the
+  'rotate' command to rotate the resulting object so that the
+  orientation is the desired one.  For example, this will display the
+  surface of revolution about the X axis:
+
+    % First example, part 2:
+
+    % rotate current surface about the Y axis
+    rotate(h, [-90 0], 90);
+
+    % do some manipulation just to illustrate the object's position
+    view([-5 30]);
+    xlabel('X Axis');
+    ylabel('Y Axis');
+    zlabel('Z Axis');
+
+  If the revolution is to be performed about the dependent variable
+  axis, then the solution will not be in a form obtainable by
+  'cylinder'.  However, you still easily create the surface of
+  revolution.  Here's the second example:
+
+    % create polar coordinates
+    [theta, rho] = meshgrid(0:.1:2*pi, 0:.1:4);
+    % create z data.  Notice that z vs. rho is again a Gaussian curve.
+    z = exp(-(rho-2).^2);
+    % translate to cartesian coordinates
+    [x,y] = pol2cart(theta,rho);
+    % display result
+    surf(x,y,z);
+
+  You should be able to create a surface of revolution for any function
+  using one of these two methods.
+
+  Kris Geising
+  The MathWorks, Inc
+
+  -----------------------------------------------------------
+Carolyn's Desk
+
+  With the advent of Windows 95, some idiosyncrasies with MATLAB 4.2c and
+  the Student Edition of MATLAB 4.0 have come to our
+  attention. Technical Support has written a Technical Note
+  dealing with these idiosyncrosis.  The current problems and
+  solutions are listed below.  For an up-to-date listing, point
+  your browser to:
+
+      http://www.mathworks.com/1110.html
+
+  Q1: Every time I try to save files with a .m extension, they show up
+      having a.txt or .m.txt extension. 
+
+  S1: In Windows 95, if you are hiding the DOS extensions for
+      'registered' filenames, you aren't allowed to change the
+      filename extension. For example, if you edit a text file 
+      with the registered extension .txt, and you save it as file2.m,
+      it actually gets saved as file2.m.txt. 
+
+      To register .m as a viable extension, please do the following: 
+
+       Open up your Computer.
+       Click on the View menu.
+       Choose Options.
+       Choose File Types.
+       Select New Type.
+       Type M-file in the Description of type field.
+       Type .m in the Associated extension field.
+       Click on New to open the Actions window.
+       Type open with Notepad in the Action field.
+       Use the Browse button to find notepad.exe for the application.
+       used to perform action field 
+       Click OK to close New Action window 
+       Click OK to close the File Type window 
+
+       You can now save text files with a .m extension.
+
+  Q2:  When I try to run the Student Edition of MATLAB, I receive the
+       following error: 
+
+             warning: bad handle to destroy_handle
+
+  S2:  This problem relates to the FPU emulator that we ship with the
+       Student Edition. Our Development staff is aware of the
+       incompatibility with MS Windows 95 and we are currently
+       investigation the issue. This section will be updated as soon
+       as the information becomes available. 
+
+       Note: If your computer has a math coprocessor, this is not an issue. 
+
+  Q3: The Notebook does not work with Word 7.0. 
+
+  S3: This is a known problem that our developers are
+      investigating. Currently the workaround is to use Word 6.0, which can
+      be used with Windows 95.  
+
+  Q4: If a figure window is maximized, gtext and zoom will not display
+      changes until the window is refreshed, for example, by changing
+      the size of the window.   
+
+  S4: There is no workaround at this time. 
+
+  Q5: The immovie command and hdfpeek commands cause a general
+      protection fault.  
+
+  S5: There is no workaround at this time.
+
+  Q6: Problems creating and/or running stand-alone executables. 
+
+  S6: 
+        o Compiling under Metaware: 
+
+          Executables cannot be created using the "banging out" feature
+          (i.e., using the '!' character). Instead, you must compile
+          the applications at the DOS prompt.  
+
+        o Compiling under MSVC: 
+
+          When you run stand-alone applications, you need to bang out and
+          use the start command (i.e., !start foo). 
+
+        o Compiling under WATCOM, Borland, and NDP: 
+
+          Stand-alone programs can be compiled and/or executed by banging
+          out of MATLAB without a problem. 
+
+  Q7: Problems creating MAT-files. 
+
+  S7: 
+        o Compiling under Borland: 
+
+          matOpen won't create MAT-files. Also, when compiling,
+          several error messages are generated, for example, 
+
+         "Error: Fixup overflow at _TEXT:0x****, target =
+         _FUNCTION_NAME_in module FOO.C"
+
+
+         There is no workaround at this time. 
+
+        o Compiling under NDP: 
+
+          Creating MAT-files causes a general protection fault.
+
+          There is no workaround at this time. 
+
+        o Compiling under MSVC, WATCOM and Metaware: 
+
+          MAT-files can be created without a problem. 
+
+  Q8: Problems creating MEX-files. 
+
+  S8: 
+        o Compiling under NDP FORTRAN: 
+
+          clear mex causes a General Protection Fault. We cannot
+          determine if the reason is an accumulation of MEX-files or
+          one specific one. 
+
+          There is no workaround at this time. 
+
+        o Compiling C MEX-files. 
+
+          Seems to work fine with all compilers   
+
+  -----------------------------------------------------------
+New files on the FTP Site
+
+  -----------------------------------------------------------
+
+        ftp.mathworks.com  [144.212.100.10]
+        Log in as "anonymous", give e-mail address as password.
+
+        Can't ftp? You can access all the files on the ftp site
+        through e-mail. Send e-mail to matlib@mathworks.com with
+        the body of the message containing the commands to be
+        executed. Send the message "help" (without quotes) for
+        syntax details.
+
+        Don't know how? Send an e-mail to matlib@mathworks.com with
+        the body (not the subject line) containing the words
+        "send ftphelp" (no quotes).
+
+        Have some code you would like to share with other
+        MATLAB/SIMULINK users? Get the file /README.incoming
+        and/or send ftpadmin@mathworks.com an e-mail.
+
+        For a hypertext index, point your favorite web browser to,
+          http://www.mathworks.com/ftpindex.html
+   -----------------------------------------------------------
+
+  -----------------
+/pub/contrib/graphics/hull2d/
+
+ Finds the convex hull of a set of 2D points.
+
+ Author: Richard Schreier, Oregon State University.
+         <schreier@ece.orst.edu>
+
+  -----------------
+pub/contrib/graphics/help/
+
+ UIHELP is a utility that helps GUI designers provide online help
+ in their GUI's.  When run on a figure it creates an M-file such
+ that if attached to the keypressfcn, pressing the 'h' key while
+ the cursor is above any uicontrol in the figure will pop up a
+ help message.  The message is initially set to a default, but
+ as the location of each uicontrol is marked with its TAG and
+ STYLE in the M-file, changing the help strings to contain useful
+ information should be an easy task.
+
+ Author: Keith Rogers
+         <kerog@ai.mit.edu>
+  -----------------
+pub/contrib/graphics/smith/
+
+ The Smith Chart Toolbox contains routines for drawing and
+ working with Smith charts.
+
+ Author: Soeren Laursen
+         <slau93@control.auc.dk>
+  -----------------
+pub/contrib/graphics/approxi/
+
+ Approximation of a 2-D function y = y(x) or a 3-D function
+ z = z(x,y) to reduce the number of pairs. The key to the algorithm
+ is to analyze the first-order derivative of the function. It 
+ reduces the number of elements of a function for
+ better handling and faster computation.
+
+ Author: Ludger Merz, DASA-Airbus GmbH Germany
+         <100533.2037@compuserve.com>
+  -----------------
+pub/contrib/graphics/snake/
+
+  Snakes for Matlab!
+  The two M-files implement a type of dynamic contour following
+  known as snakes.  First proposed by Kass, Witkin and Terzopoulos
+  in 1987, snakes are a variational technique to find the best
+  contour that aligns with an image. The basic routine, snake(),
+  aligns a sequence of points along a contour to the maximum of an
+  array or image.
+
+  Author: Chris Bregler and Malcolm Slaney
+          <bregler@interval.com> and <malcolm@interval.com>
+          or <bregler@cs.berkeley.edu>
+  -----------------
+pub/contrib/teaching/world52.m
+
+  A MATLAB translation of Mr. Jay Forrester DYNAMO program
+  "World Dynamics W5".
+
+  Author:Michael Nowak, Germany
+         <100533.2037@compuserve.com>
+  -----------------
+pub/contrib/simulink/ansim/
+
+ The Simulation Animation Toolbox is a collection of
+ functions used to animate simple objects based on inputs
+ from a SIMULINK simulation.  Animation and setup are implemented in a
+ Graphical User Interface (GUI) environment
+ that allows the user to be "hands off" the SIMULINK
+ simulation.
+
+ Users can choose five object types 
+ available for animation: dot, line, patch, text, and
+ rectangle.  Each  object type has properties that can
+ either be constant values or be dependent upon an input from
+ the SIMULINK simulation.  Any number of objects may be added,
+ modified, or deleted.
+
+ Other functionality that has been builtin to the
+ Animation block includes the ability to control a number of
+ axis parameters and the ability to save and load animation
+ setups.
+
+ Requires MATLAB 4.2c
+
+ Author: Loren Dean, The MathWorks Inc.
+         <ldean@mathworks.com>
+  -----------------
+pub/contrib/image/hough.m
+
+ Performs the Hough transform of a binary image.
+
+ Author: Dimitrios Ioannou
+         <dioan@robotsg.nuceng.ufl.edu>
+         <dioan@alder.circa.ufl.edu>
+
+  -----------------
+
+New Internet Service      Dave Pascoe <pascoe@mathworks.com>
+
+  Back in July I mentioned that we intended to provide more access to
+  the USENET newsgroup comp.soft-sys.matlab by setting up a public
+  news server. I sent out a survey and many of you responded with interest.
+
+  I am pleased to announce that this service is now available to those
+  of you who have no current access to a USENET news server (NNTP server)
+  at your organization.
+
+  Here are the instructions for accessing the server:
+
+  1) You need software for accessing USENET News.  This can be either a 
+     news reading program or a WWW browser such as Netscape.
+
+  2) In your news reading program or WWW browser, enter the following
+     host name as your "news server":  www.mathworks.com
+
+     If you are using a WWW browser, you can also simply access our
+     server by entering the following URL:    news://www.mathworks.com 
+
+  3) You also need to specify a "mail server".  This is any SMTP 
+     (Simple Mail Transfer Protocol) server that will allow you to send
+     e-mail from your computer.  Contact your local site administrator(s) for
+     the address of your SMTP server.  If your site sends e-mail on the 
+     Internet, it has an SMTP server.
+
+  4) Open a connection to the server and you should see the 
+     comp.soft-sys.matlab newsgroup.  You can read as well as post
+     articles there.
+
+     For specific help with the software, please consult the built-in
+     help or the documentation for the package you're using.  Or contact
+     your local systems administrator.
+
+
+     If you have any questions, please e-mail them to: usenet@mathworks.com
+
+     Thanks, and we hope you enjoy accessing comp.soft-sys.matlab!  It's a
+     great forum for the exchange of MATLAB/SIMULINK information.
+
+[CR]
+
+***************************************************************
+
+Date sent:        Mon, 26 Feb 1996 20:50:08 -0500 (EST)
+From:             MATLAB-Digest-Request <matlab-digest-request@mathworks.com>
+Subject:          The MathWorks MATLAB Digest; Volume 4, number 1
+Forwarded to:     dmeko@ltrr.arizona.edu
+To:               dmeko@CCIT.ARIZONA.EDU
+Send reply to:    batgirl@mathworks.com
+
+             The MathWorks MATLAB Digest
+                   Jan/Feb 1996
+              Volume 4, number 1
+
+=====================
+Table of Contents
+=====================
+
+        o A Call for MATLAB Related Web Pages
+        o Upcoming Conferences and Tradeshows
+        o New Product Announcement & a Listing of All Products
+        o Q & A
+           o How do I make plot symbols: o, x, +, * smaller when
+             plotting?
+           o How to make old lines disappear when plotting new lines and
+             how to change the number in a figure window dynamically? 
+           o How to create several plots in a loop and print them with
+             different ID numbers?
+           o How to make MATLAB beep without using the "error" function?
+        o New Files on the FTP Site
+
+  -----------------------------------------------------------
+ The MathWorks MATLAB digest is a monthly electronic newsletter
+ sent to subscribing users. To add yourself to the mailing
+ list, send e-mail to subscribe@mathworks.com (please include
+ your siteid or license number). To remove yourself, send
+ e-mail to unsubscribe@mathworks.com. Send
+ submissions/questions/comments to digest@mathworks.com.
+
+   Carolyn Romano             FTP: ftp.mathworks.com [144.212.100.10]
+   The Mathworks, Inc.        WWW: http://www.mathworks.com
+   cromano@mathworks.com      INFO: info@mathworks.com  
+
+  -----------------------------------------------------------
+A Call for MATLAB Related Web Pages
+
+  I'm looking for WWW home pages (URL's) related to MATLAB, SIMULINK,
+  or any of our application toolboxes including any known pages with MATLAB
+  graphics on them. I am curious as to how many of you out there are
+  using the Web for documentation, MATLAB presentations, or just using our
+  cool graphics somewhere on your page. 
+
+  Also, if you have other ideas/comments about our WWW page, send them
+  along as well. I'd like to tap into the collective creativity of the
+  MATLAB WWW community to make our server really interesting and
+  dynamic.
+
+  Please send references to webmaster@mathworks.com
+
+  -----------------------------------------------------------
+Upcoming Conferences and Tradeshows
+
+  DSPx
+  March 12-14
+  San Jose, CA
+  Booth #1326
+
+  IEEE/IAFE Conference on Computational Intelligence for Financial Engineers
+  March 25-26
+  New York, NY
+
+  -----------------------------------------------------------
+ New Product Announcement 
+
+        o RTW ADA Extension (for use with Real-Time Workshop)
+
+  The SIMULINK RTW Ada Extension automatically generates Ada code
+  directly from SIMULINK block diagrams. This allows the execution of
+  continuous, discrete-time, and hybrid system models on a wide range of
+  computer platforms, including real-time hardware.
+
+  RTW Ada Extension can be used for:
+    o Rapid Prototyping
+    o Embedded Real-Time Control
+    o Real-Time Simulation
+    o Stand-alone Simulation
+
+  For additional information, please send mail to info@mathworks.com or
+  point your browser to http://www.mathworks.com/rtwada.html.
+
+       +++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        o Listing of All Products
+
+             MATLAB
+             MATLAB Compiler
+             MATLAB C Math Library 
+             Control System Toolbox
+             Financial Toolbox  
+             Frequency Domain System Identification Toolbox
+             Fuzzy Logic Toolbox
+             Higher-Order Spectral Analysis Toolbox
+             Image Processing Toolbox
+             LMI Control Toolbox 
+             Model Predictive Control Toolbox
+             5-Analysis and Synthesis Toolbox 
+             NAG( Foundation Toolbox     
+             Neural Network Toolbox
+             Optimization Toolbox
+             Partial Differential Equation Toolbox
+             QFT Control Design Toolbox
+             Robust Control Toolbox 
+             Signal Processing Toolbox
+             Spline Toolbox
+             Symbolic Math Toolboxes
+             Statistics Toolbox  
+             System Identification Toolbox  
+
+             SIMULINK
+             SIMULINK Accelerator
+             Real-Time Workshop
+             DSP Blockset 
+             Fixed-Point Blockset
+             Nonlinear Control Design Blockset
+
+  For additional information, please send mail to info@mathworks.com or
+  point your browser to http://www.mathworks.com/products.html.
+
+  -----------------------------------------------------------
+Questions & Answers
+
+Question: How do I make plot symbols: o, x, +, * smaller when
+          plotting? 
+
+  Thanks a lot!
+
+  Jianmin
+
+
+Answer:
+   1. Nico Sneeuw said:
+
+   First get a handle to your plotting command. Then you can change
+   the markersize property.
+
+   h = plot(x,y,'+')
+   set(h,'MarkerSize',8)
+
+   2. Chaman L. Sabharwal said:
+
+   plot(x,y,'o','markersize',10)
+  ----------------------
+
+Question: I want to make old lines disappear when new ones draw (they
+          all are created by one constraint with different
+          coefficients) in same figure, can I use plot? 
+
+          I also want to plot a changing number in a figure window to
+          reflect the real input, how to do this?
+
+ Thanks a lot!
+
+ Lijian Fang
+ Lfang@eng.ua.edu
+
+Answer from Sanjai Singh (The MathWorks, Inc.)
+
+   Here is an example that can be modified to suit your need.
+
+   for i = 1:10,                                  
+       plot(rand(5,1));
+       drawnow
+       set(gcf,'numbertitle','off','name',int2str(i))
+   end
+
+  ----------------------
+
+Question:  I want to create several plots within a loop and print to a file
+           with the name created automatically including the loop
+           variable, such as 
+
+                print -deps pic_var_.eps
+
+           where var is a loop variable. e.g.
+
+                print -deps pic_1_.eps
+                print -deps pic_2_.eps
+
+           I tried 
+
+                filename=['pic_' num2str(var) '_.eps']
+                print -deps filename
+
+           but that doesn't work.
+
+  Thanks,
+
+  Uwe
+
+   Institute B of Mechanics
+   University of Stuttgart
+   Pfaffenwaldring 9           Phone: +49 (711) 685-6391
+   70550 Stuttgart             Fax:   +49 (711) 685-6400
+   Germany                     Email: pu@mechb.uni-stuttgart.de
+
+Answer from Sanjai Singh (The MathWorks, Inc)
+
+    Your suggestion is very close ...the following should work.
+
+    filename=['pic_' num2str(var) '_.eps'];
+    eval(['print -deps ' filename])
+
+Answer from Hans Olsson:
+
+    Here's another way without using eval:
+
+    filename=['pic_' num2str(var) '_.eps'];
+    print('-deps',filename);
+
+    // http://www.dna.lth.se/home/Hans_Olsson/
+    // Hans.Olsson@dna.lth.se [Please no junk e-mail]
+  ----------------------
+
+Question: Does anyone know how to make MATLAB produce the error beep
+          without using the "error" function?  I'd like this to work
+          on PC's without sound cards, so the MATLAB sound functions
+          are not an option. 
+
+   Thanks in advance!!!
+
+   -Kenny
+   Kenny Unice
+   kmu1@crux2.cit.cornell.edu
+   Cornell University
+   Multimedia Courseware Studio
+
+Answer from Niclas
+
+  The following works on UNIX workstations. I'm not sure about Windows,
+  though...
+
+       disp(sprintf('\a'))
+
+  Cheers,
+
+  /Niclas
+
+   FYI - the above suggestion does indeed work on Windows, too.  
+
+   On the Macintosh, however, neither the above suggestion nor "string(7)"
+   agreement is  system compatible, so you would need to use this instead:   
+
+        system_dependent(1001)
+
+   - Lorin Sherman (The MathWorks, Inc)
+
+
+
+  -----------------------------------------------------------
+New files on the FTP Site
+
+   -----------------------------------------------------------
+
+        ftp.mathworks.com  [144.212.100.10]
+        Log in as "anonymous", give e-mail address as password.
+
+        Can't ftp? You can access all the files on the ftp site
+        through e-mail. Send e-mail to matlib@mathworks.com with
+        the body of the message containing the commands to be
+        executed. Send the message "help" (without quotes) for
+        syntax details.
+
+        Don't know how? Send an e-mail to matlib@mathworks.com with
+        the body (not the subject line) containing the words
+        "send ftphelp" (no quotes).
+
+        Have some code you would like to share with other
+        MATLAB & SIMULINK users? Get the file /README.incoming
+        and/or send e-mail to ftpadmin@mathworks.com.
+
+        For a hypertext index, point your favorite web browser to,
+          http://www.mathworks.com/ftpindex.html
+   -----------------------------------------------------------
+/pub/contrib/misc/jdtimes.m
+
+  Converts UNIX time value to Julian day and time.
+
+ Trevor Cooper
+        tcooper@ucsd.edu
+        Marine Life Research Group
+
+******************************************************
+/pub/contrib/simulink/typarams
+
+  Read SIMULINK file, extract nontrivial dialog
+  box entries. The information in the dialog boxes
+  of SIMULINK blocks is usually not visible when
+  printing the block diagrams. The output of
+  TYPARAMS complements the block diagrams to form a
+  complete paper documentation of a model.
+******************************************************
+/pub/contrib/simulink/simbus/
+
+  DataBus Blockset
+
+  The DataBus Blockset provides a method for manipulating
+  signals from a vector in SIMULINK. Signals can be
+  selected, set, and changed - all by name, rather than
+  index. This is useful for handling multiple signals of
+  varying lengths. 
+
+   William York
+ The MathWorks Inc.
+ william@mathworks.com
+
+*****************************************************
+/pub/contrib/graphics/inplot.m
+
+  INPLOT takes data of the form (xvec,yvec) and
+  plots it in the figure window.  Additionally, you
+  can specify a range [smin,smax], which is a
+  subset of xvec. The routine plots that
+  subset of the data in a window in the upper
+  leftmost corner of the same figure, effectively giving
+  you a picture-in-a-picture.  Nice routine for
+  looking a time signals with noise in them.  Routine is
+  documented and examples provided.
+
+ Jeff Butera - Math Graduate Student
+   North Carolina State University
+   jvbutera@eos.ncsu.edu 
+   http://www4.ncsu.edu/eos/users/j/jvbutera/www/
+
+******************************************************
+/pub/contrib/control/carex/
+
+  Computes upper and lower bounds for the condition
+  number of continuous-time algebraic Riccati equations
+ (CARE) Includes test examples for the continuous-time
+  algebraic Riccati equation.    
+
+ Peter Benner 
+ Fakultaet fuer Mathematik
+ Germany          
+ benner@mathematik.tu-chemnitz.de
+
+******************************************************
+/pub/contrib/optim/least2.m
+
+ Performs weighted least squares polynomial curve fitting.
+ It is a generalization of polyfit.m
+
+  R. Johnson 
+
+******************************************************
+
+/pub/contrib/optim/setconst.m
+
+  Solves constrained minimization problems where some of
+  the variables are restricted to discrete values.
+
+  Ingar Solberg
+  Elkem Aluminium Mosj0en
+  Norway
+  Ingar.Solberg@elkem.no
+
+******************************************************
+/pub/contrib/misc/centroid.m:
+
+ Calculates the centroid of a weight vector according to
+ a distance vector. It also computes column wise for a weight
+ array.
+
+   R. Johnson 
+******************************************************
+/pub/contrib/misc/centroi2.m
+
+ Calculates the centroid or center of gravity of a matrix
+
+  R. Johnson    
+
+******************************************************
+
+/pub/contrib/misc/matdiff.c
+
+  MatDiff is a C program that compares two .mat files.
+  It prints out lists of:
+
+    Variables in the first file but not in the second.
+    Variables in the second file but not in the first.
+    Variables which appear in both files and are equal.
+    Variables which appear in both files but are different.
+
+  Keith Rogers
+        kerog@draper.com
+
+******************************************************
+/pub/contrib/misc/complement.m
+
+  COMPLEMENT produces a row vector containing the
+  elements of the universal set b not belonging to the
+  intersection of sets a and b.  a and b are each sets of
+  numbers represented as row vectors. The output, the
+  "complementary" set c, is also represented as a row
+  vector
+
+ Jay I. Simon
+        MIT Lincoln Laboratory
+        (jsimon@ll.mit.edu)
+
+******************************************************
+
+/pub/contrib/signal/xcorr2f.m
+
+xcorrf2.m:
+
+ Functionally equivalent to xcorr2.m in the Signal
+ Processing Toolkit, but it uses fast Fourier transforms
+ for speed.
+
+   R. Johnson 
+
+******************************************************
+/pub/contrib/signal/zverev/
+
+zverev: <directory>
+
+  Used to set up GUI windows in MATLAB for designing and
+  comparing some of the most commonly used standard
+  filters in science and engineering.  
+
+  David Winters 
+   David_Winters@maxtor.com
+
+******************************************
+/pub/contrib/graphics/orthplot.m
+
+  3-D plot with orthogonal projections
+
+ William Constantine
+    University of Washington 
+*******************************************
+/pub/contrib/graphics/frontpts.m
+
+ This is a routine that computes points (xf,yf,zf)
+ that appear to be in the same location as given
+ points (x,y,z) but are actually closer to the
+ viewpoint.  This is useful for plotting points or
+ lines on a surface (if exactly in-line with the
+ surface, MATLAB sometimes puts them behind the
+ surface because it thinks they are infinitesimally
+ behind the surface).
+
+ Erik A. Johnson
+ johnsone@uxh.cso.uiuc.edu
+*******************************************
+/pub/contrib/graphis/zoom3d.m
+
+  Zoom3d opens a further figure window displaying the
+  2-D surface plot. Use mouse to select first the zoom
+  region and second the size of window for displaying the
+  zoomed figure. After doing that the 2-D surface plot
+  disappears and as a result, obtain the zoomed
+  3-D mesh or surf plot.
+
+  Gaby Gniss
+  ggniss@elserv.ffm.fgan.de
+
+*******************************************
+/pub/contrib/tools/edit2.m:
+
+  To be used with the Notebook Suite. An enhancement to
+  EDIT.M.  It does two things differently than the original:
+  it uses a Windows PIF-file to specify and initialize the
+  editor, and it allows editing non-MEX and non-M ascii files.
+
+  cogdellj@timken.com
+
+*******************************************
+/pub/contrib/math/hypergeo
+
+ hypergeom.f and hypergeom.m
+
+ A Fortran MEX-file for the evaluation of the confluent
+ hypergeometric function.  A .m file is included that only
+ contains a command synopsis.
+
+ R. Schreier and B. Zhang, Oregon State University
+ <schreier@ece.orst.edu> http://www.ece.orst.edu/~schreier
+
+**********************************************
+/pub/contrib/simulink/dpm/
+
+ An update to the digital panel meter SIMULINK block. 
+ The Menu bar is eliminated on non-Macintosh platforms.
+ This makes the figure window smaller.
+
+ The display data is reset to zeros at the beginning of
+ each simulation. It used to just continue on with previous
+ data.
+
+ Though the figure window is not resizable (to save space),
+ it is now clear in the M-file how to make it larger if
+ your uicontrol text font is large.  Two variables DPM_width
+ and DPM_height are used to specify the figure width and
+ height respectively.
+
+   Dr. Duane Hanselman
+   Electrical and Computer Engineering
+   University of Maine
+   duaneh@eece.maine.edu
+
+  -----------------
+[CR]
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+
+             The MathWorks MATLAB Digest
+                   March 1996
+                Volume 4, number 2
+
+=====================
+Table of Contents
+=====================
+
+      o Q & A
+        I would like to know how to plot a second
+             curve (same x-variable) using an additional Y-axis on the
+             same chart.
+       
+        o New Files on the Ftp Site
+
+  -----------------------------------------------------------
+ The MathWorks MATLAB Digest is a monthly electronic newsletter
+ sent to subscribing users. To add yourself to the mailing
+ list, send e-mail to subscribe@mathworks.com (please include
+ your siteid or license number). To remove yourself, send
+ e-mail to unsubscribe@mathworks.com. Send
+ submissions/questions/comments to digest@mathworks.com.
+
+   Carolyn Romano             FTP: ftp.mathworks.com [144.212.100.10]
+   The Mathworks, Inc.        WWW: http://www.mathworks.com
+   cromano@mathworks.com      INFO: info@mathworks.com  
+
+  -----------------------------------------------------------
+
+
+Answer2: 
+   Hi,
+
+   In answer to your second question, you can put multiple Y-axes on one plot
+   using an M-file written by The MathWorks Technical Support department.
+   You can find this file on our ftp server at:
+
+      ftp://ftp.mathworks.com/pub/tech-support/library/graphics/plotyy.m
+
+   Hope this helps!
+
+   ==Kris Giesing===========================kris@mathworks.com=========
+   | The MathWorks, Inc.           | e-mail: support@mathworks.com    |
+   | 24 Prime Park Way             | WWW  : http://www.mathworks.com  |
+   | Natick, MA 01760-1500         | FTP  : ftp.mathworks.com         |
+   | Phone: (508) 657-7000         | FAX  : (508) 647-7201            |
+   |                               | TechFacts : (508) 657-7022       |
+   | 24-Hour Technical Solutions available by TechFacts, WWW, and FTP |
+   ====================================================================
+
+  ***************************************************************
+
+Question: 
+   The demonstration "fitdemo" provides a curve-fitting algorithm to solve
+   for
+         y = c(1)*exp(-lam(1)*t) + c(2)*exp(-lam(2)*t)
+
+   When the program finishes, it outputs the "lam" values.  However, for
+   the formula to be useful, you need the "c" values, too...but the program
+   does not output these.  Does anyone know where they can be found?
+
+   Thanks,
+   Greg Sandell
+
+   --
+   Gregory J. Sandell, Research Associate, sandell@sparky.parmly.luc.edu
+   Parmly Hearing Institute, Loyola University Chicago
+   6525 N. Sheridan Chicago IL 60626 USA voice:312-508-3976 FAX:312-508-2719
+   WWW: http://www.parmly.luc.edu/sandell/
+
+Answer:
+
+   Hi Greg,
+
+   The "c" valuess are computed via a simple linear least squares fit.
+
+   Notice that the equation to be fit can be written:
+
+      y = A*c
+
+   where c = [c(1) .. c(length(lam))] and
+      A = exp(-t*(lam'));     % re: size(A_t)=[length(t) length(lam)]
+
+   Thus 
+
+      c = A\y;
+
+   HTH,
+   +=== Andrew Potvin ======================== eepotvin@ee.ust.hk ===+
+   | The Hong Kong University of Science and Technology              |
+   | EEE Department                                http://www.ust.hk |
+   +=== Tel: 852-2358-8843 =================== Fax: 852-2358-1485 ===+
+
+  ***************************************************************
+
+
+
+
+ -- Chris Griffin ------------------------ cgriffin@mathworks.com --   
+    The MathWorks, Inc.                  http://www.mathworks.com  
+ -------------------------------------------------------------------
+
+
+  -----------------------------------------------------------
+New Files on the FTP Site
+
+   -----------------------------------------------------------
+
+        ftp.mathworks.com  [144.212.100.10]
+        Log in as "anonymous", give e-mail address as password.
+
+        Can't ftp? You can access all the files on the ftp site
+        through e-mail. Send e-mail to matlib@mathworks.com with
+        the body of the message containing the commands to be
+        executed. Send the message "help" (without quotes) for
+        syntax details.
+
+        Don't know how? Send an e-mail to matlib@mathworks.com with
+        the body (not the subject line) containing the words
+        "send ftphelp" (no quotes).
+
+        Have some code you would like to share with other
+        MATLAB & SIMULINK users? Get the file /README.incoming
+        and/or send e-mail to ftpadmin@mathworks.com.
+
+        For a hypertext index, point your favorite web browser to
+          http://www.mathworks.com/ftpindex.html
+
+1/29/96
+
+/pub/contrib/graphics/plwin/
+
+        Interactive 2-D plotting for MATLAB
+
+  PL uses the same parameters as PLOT but allows interactive
+  manipulation of axes, titles, text and keys etc.
+
+  R.S.Oldaker@e-eng.hull.ac.uk (R.S.Oldaker)
+
+
+
+
+===================================================================
+2/20/96
+/pub/contrib/stats/sturm
+
+ REGUI is a graphical user interface (GUI) to facilitate comparing
+ regression methods.  The Least Squares regression method is compared
+ to the robust methods, Least Median of Squares (LMS) and Inner
+ Product (IP).  The LMS program included is called Progress (Program
+ for RObust reGRESSion). Users can add other methods as well. Several
+ data sets are included in the DATA subdirectory.  Much of our
+ interface was developed to facilitate the use of PROGRESS.  This
+ program implements LMS and provides excellent diagnostics.  It was
+ written for DOS in Fortran (Rousseeuw and Leroy 1987). Our interface
+ is graphical with pull-down menus, with a point and click interface.
+ If the user chooses certain default settings, there is very little
+ typing.  All the data sets from Rousseeuw are included as well as the
+ PROGRESS executable file.
+
+        The College of Staten Island
+        Deborah Sturm
+        STURM@POSTBOX.CSI.CUNY.EDU
+===========================================
+
+2/21/96
+/pub/contrib/tools/tree
+
+ This directory contains a collection of simple tree-management
+ M-files for use with MATLAB 4.2c
+
+   With these m-files you can:
+        - Create an M-ary tree
+        - Add data to a node
+        - Add children to a node
+        - Add data to branches from a node to a node's children
+        - Move from a node to the node's children or parent
+        - Prune a tree
+        - Extract subtrees from a tree
+        - Graft/merge M-ary and N-ary trees together into a
+          max(M,N)-ary tree
+        - Plot a diagram of the tree with labels for nodes and
+          branches
+        - Watch a demo to learn how most of the
+          functions work
+
+                Jonathan Su
+                su@ee.gatech.edu
+
+
+==================================================================
+2/29/96
+keep.m
+
+ "keep.m" is a complement to the "clear" command:
+ instead of clearing the supplied variables, it
+ keeps them and deletes the rest.
+
+ For example, the command  " keep x y " clears
+ all variables from the workspace except x and y.
+
+        Eric Breitenberger
+        eric@dino.gi.alaska.edu
+
+==================================================================
+3/1/96
+pub/contrib/stats/leasqr/
+
+ A modified version of Levenberg-Marquardt
+ nonlinear regression program previously submitted by R.Schrager.
+ This version corrects an error in that version and also provides
+ an easier to use version with automatic numerical calculation of
+ the Jacobian matrix. In addition, this version calculates statistics
+ such as correlation.
+
+ Version 3 Notes Errors in the original version submitted by Shrager
+ (now called version 1) and the improved version of Jutan (now
+ called version 2) have been corrected.  Additional features,
+ statistical tests, and documentation have also been included
+ along with an example of use.  CAUTION: Some the the input and
+ output arguments were changed from the previous version.
+
+  Ray Muzic     rfm2@ds2.uh.cwru.edu
+  Arthur Jutan  jutan@charon.engga.uwo.ca
+
+====================================================================
+3/4/96
+/pub/contrib/graphics/arrow3.m
+arrow3.m
+
+ Plotting of arrows with option to set arrow head radius.
+
+        gianni@ingfi1.ing.unifi.it
+
+
+
+
+==================================================================
+
+
+===================================================================
+
+3/11/96
+/pub/contrib/graphics/crsshair.m
+
+ A graphical user interface (GUI) interface for reading (x,y) values
+ from a plot. 
+
+   A set of mouse driven crosshairs is placed on the current axes,
+   and displays the current (x,y) position, interpolated between
+   points. For multiple traces, only plots with the same
+   length(xdata) will be tracked. Select done after using to
+   remove the GUI's, and to restore the mouse buttons to
+   previous values.
+
+    Richard G. Cobb    3/96
+    rcobb@afit.af.mil
+
+==============================================
+
+
+
+****************************
+
+Date sent:        Thu, 16 May 1996 19:02:37 -0400 (EDT)
+From:             MATLAB Digest <matlab-digest@mathworks.com>
+Subject:          The MathWorks MATLAB Digest; Volume 4, number 3
+Forwarded to:     dmeko@ltrr.arizona.edu
+To:               dmeko@CCIT.ARIZONA.EDU
+Send reply to:    matlab-digest@mathworks.com
+
+
+              The MathWorks MATLAB Digest
+                      May 1996
+                  Volume 4, number 3
+
+=====================
+Table of Contents
+=====================
+
+  o CSSM Archives Available via WWW
+         o Upcoming Conferences and Tradeshows
+         o New Product Announcements
+         o SIMULINK-Based Q & A
+            o How can I use "linmod" to determine time constants in
+              SIMULINK models? 
+            o Has anyone used SIMULINK to model power plant systems,
+              process, and control? 
+            o How do I use "get_param" in combination with masked
+              blocks?
+            o How can I generate an impulse in SIMULINK?
+            o Why is memory not being freed from my C-MEX S-function?
+         o New Files on the Ftp Site
+
+   -----------------------------------------------------------
+  The MathWorks MATLAB digest is a monthly electronic newsletter
+  sent to subscribing users. To add yourself to the mailing
+  list, send e-mail to subscribe@mathworks.com (please include
+  your siteid or license number). To remove yourself, send
+  e-mail to unsubscribe@mathworks.com. Send
+  submissions/questions/comments to digest@mathworks.com.
+
+    Carolyn Romano             FTP: ftp.mathworks.com [144.212.100.10]
+    The Mathworks, Inc.        WWW: http://www.mathworks.com
+    cromano@mathworks.com      INFO: info@mathworks.com  
+
+   -----------------------------------------------------------
+CSSM Archives Available via WWW
+
+ We now have an up-to-date archive of all comp.soft-sys.MATLAB (CSSM)
+ postings available on our Web site. 
+
+ Many of you have asked for this, especially those who don't have
+ newsgroup access. The Tech Support search engine, which is also
+ available on the Web, works in conjunction with the CSSM archives
+ to answer your technical questions 24 hours a day.
+
+ Point your WWW browser at:
+
+   http://www.mathworks.com/archive.html
+
+ and then look for the link called "USENET Newsgroup".
+
+ The archives are organized by year and month.  The search engine
+ searches for a particular year.  It's easy to use.
+
+   -----------------------------------------------------------
+Upcoming Conferences and Tradeshows
+
+    RISK (Financial)
+    May 16-17
+    Boston MA
+
+   -----------------------------------------------------------
+New Product Announcements
+
+         o The Wavelet Toolbox
+
+     The MATLAB Wavelet Toolbox, from provides a
+     comprehensive collection of M-files and GUI-based tools for examining
+     local, multiscale, and nonstationary phenomena. Wavelet methods offer
+     additional insight and performance in any application where Fourier
+     techniques have been used. The toolbox is useful in many signal and
+     image processing applications, including speech and audio processing,
+     communications, geophysics, finance, and medicine. 
+
+     For additional information, please send mail to info@mathworks.com or
+     point your browser to http://www.mathworks.com/wavelet.html.
+
+   -----------------------------------------------------------
+SIMULINK-Based Questions & Answers
+
+Question: How can I use "linmod" to determine time constants in
+          SIMULINK models?
+
+ I am trying to determine time constants for various models. I was thinking
+ of using the linmod command, but that would require knowledge of the 
+ values of the state variables at the operating point about which I am 
+ linearizing the system. In order to get these values, I was going to 
+ run the simulation from the command line using a flag 3 in order to get the
+ values of the outputs (which I have set up to be the states) at the desired
+ time. However, that would require giving the values of the states at the 
+ time, but that is the information which I am trying to find. Any help with
+ this matter would be appreciated - thanks in advance
+
+ Zachary James Rubin
+ rubin@pwrtrn1.me.wisc.edu
+
+Answer: 
+
+ To determine the equilibrium values of the states so that you can then 
+ linearize the model about these equilibrium values, you use the function 
+ "trim". The syntax is:
+
+ % [x,u,y,dx]=trim('model',x0,u0,y0)
+
+ where 'model' refers to model.m (your model M file) and x0,u0 and y0 are 
+ initial guess values for the states, inputs and outputs, respectively.
+ More information can be obtained from the MATLAB help pages.
+
+ Hope this helps,
+ Sunil
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Sunil Menon                                   ph: (409) 845-0440
+ Dept. of Nuclear Engineering                        (409) 845-6443 (fax)
+ Texas A&M University
+ College Station, TX 77843
+ email: s-menon@tamu.edu
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Question: Has anyone used SIMULINK to model power plant systems,
+          process and control?  
+
+ Has anyone used SIMULINK to model power plant systems, process, and
+ control?  I'm looking at combined cycle plants  ( gas turbine/Heat
+ recovery steam generator/steam cycle) with emphasis on steam cycle.
+ Need to model pumps, heat exchangers/boilers, control valves,
+ condensers, etc.  Any helpful hints or pointers to enlightening
+ discourses greatly appreciated.  
+
+ Gordon R. Smith
+ Netcom
+ Smithgor@ix.netcom.com
+
+Answer 1: 
+
+ Well, we haven't modeled combined heat and power specifically; but we 
+ do use SIMULINK to model various process plants, which include: 
+ gas-turbines, large compressors, boilers (including steam boilers), 
+ steam distribution systems, pumps, heat exchangers, control valves, 
+ condensers, process controls, etc.
+
+ As in any simulation, the key is in knowing how you want to model 
+ the various plant items, which items are to be modelled dynamically and 
+ which algebraically, and to what level of detail. Implementing those 
+ models into your chosen simulation environment (in this case SIMULINK) 
+ requires a good working knowledge of the practicalities of the 
+ chosen tool.
+
+ In your application there are various possible techniques for 
+ incorporating the necessary thermodynamics, including the possibility of 
+ using the MATLAB interface to the InfoChem MultiFlash package.
+
+ Kelvin B. Hales
+ KHACE Consulting Process Control Engineers
+ Egham, Surrey, England, TW20 9NB
+ Tel/Fax: (01784) 473153; Email:khales@cix.compulink.co.uk
+
+
+Question: How do I use "get_param" in combination with masked blocks?
+
+ I am fulfilling the last part of my graphical user interface and have
+ been confronted with a small problem with the function get_param and
+ the SIMULINK code. I have made a masked block of which I want to
+ obtain the values. I have already succeeded for all the gain blocks in
+ my SIMULINK scheme though not for the masked blocks. 
+
+ To be more exact, I have created a masked block that has the
+ parameters Td=@1;N=@2;h=@3. Now I want to obtain one of these values
+ with get_param function. 
+
+ Any help is welcome,
+
+Answer: 
+
+
+  try: 
+
+    >>get_param('blockname','mask entries')
+
+   For masks with mulitple entries, you probably want to parse the
+   output, which ends up looking like 0\/1e-6\/ (each entry is separated
+   by \/)
+
+   You can also use:
+
+   >>get_param(gcb,'mask entries')
+
+   if the block is the current block
+
+   HTH (hope this helps),
+
+   -Gary
+
+
+   ===========================================
+   Gary Levenson           gary@mathworks.com 
+   The MathWorks, Inc.     ph: 508 647-7000 
+            http://www.mathworks.com
+   ===========================================
+
+
+Question: How can I generate an impulse in SIMULINK?
+
+ I am trying to input a unit impulse function to a transfer function
+ with no luck.  I could not find a impulse function in the sources
+ folder so I used a unit step into a derivative, but it didn't work.
+ Can anyone help?
+
+
+ Thanks from a newbe in the world of SIMULINK
+
+
+ John Miller
+ Semper Fi - VMAQ-2 - We be Jammin
+
+
+Answer 1: 
+
+ You can initialize the integrators to the value of the b vector
+ of the system quadruple.. This will be the true impluse response
+ if the system is linear with respect to the inputs. If there is a
+ non-linear element from an input to a integrator, it is not clear what
+ is the correct prodecure is.
+
+ Jack Dunn
+ NASA-LaRC
+
+Answer 2:
+
+ For an impulse you should operate in the discrete domain, and, 
+ as you tried (but probably in the continuous domain), cascade
+ a discrete differentiator after a step: 
+
+ step -->  (1-z^(-1))/1 
+
+ This works fine given the restrictions in the discrete domain, 
+ (0,0,1,0,0,0) and clearly implementing a dirac distribution will
+ cause all sorts of practical problems. 
+
+ .......................................................................
+ David Wilson, PhD                     tel:   +46 54 838267    
+ Lecturer in Control Engineering       fax:   +46 54 838449
+ Department of Technology              email: david.wilson@hks.se 
+ University of Karlstad
+ S-651 88 Karlstad, SWEDEN
+ .......................................................................
+
+Question: Why is memory not being freed from my C-MEX S-function?
+
+  I'm having a problem with a C-MEX S-function model.  It does not appear to 
+  execute the mdlTerminate function to clean up some memory I've allocated. 
+  Checking ssGetTFinal returns 0 (?!), but the simulation runs to the
+  proper point.  Is there anything I could have messed up that would cause
+  this ? 
+  After I tried playing around with it, I found that if I used a short 
+  command line [t,x,y]=linsim('model',tfinal), the mdlTerminate
+  function did get  executed, but it seemed like it was at the start,
+  not the end.  Still got the memory leak message.  Normally I use a
+  line like [t,x,y]=linsim('model',tfinal,x0,options,ut) and
+  mdlTerminate never gets executed. Anybody have any ideas on
+  what the problem is ? 
+
+Answer: 
+
+ Are the memory leak messages coming from MATLAB?  If so, I suspect that you
+ are using mxCalloc.  If so, use malloc or calloc instead.  In order to
+ improve performance, SIMULINK bypasses the normal MEX calling
+ mechanism for MEX  S-functions. As a result, memory allocated via
+ mxCalloc will not get freed upon return from the MEX file and MATLAB
+ at a later point sees the memory on its allocation list but not freed
+ and thus reports the error. 
+
+  __ Rick Spada _______________________ ricks@mathworks.com __
+       The MathWorks, Inc.               info@mathworks.com
+       24 Prime Park Way           http://www.mathworks.com
+       Natick, MA 01760-1500              ftp.mathworks.com
+  __ Tel: 508-647-7000 ___ Fax: 508-647-7001 _________________
+
+  -------------------------------------------------------------------   
+
+   -----------------------------------------------------------
+ New Files on the FTP Site
+
+    -----------------------------------------------------------
+
+         ftp.mathworks.com  [144.212.100.10]
+         Log in as "anonymous", give e-mail address as password.
+
+         Can't ftp? You can access all the files on the ftp site
+         through e-mail. Send e-mail to matlib@mathworks.com with
+         the body of the message containing the commands to be
+         executed. Send the message "help" (without quotes) for
+         syntax details.
+
+         Don't know how? Send an e-mail to matlib@mathworks.com with
+         the body (not the subject line) containing the words
+         "send ftphelp" (no quotes).
+
+         Have some code you would like to share with other
+         MATLAB & SIMULINK users? Get the file /README.incoming
+         and/or send e-mail to ftpadmin@mathworks.com.
+
+         For a hypertext index, point your favorite web browser to
+           http://www.mathworks.com/ftpindex.html
+    -----------------------------------------------------------
+4/2/96
+ftp://ftp.mathworks.com/pub/contrib/SIMULINK/automotive/
+
+        This directory contains a collection of automotive models
+ developed to solve real-world problems in engineering and design.
+ In addition to a thorough discussion of the modeling challenges
+ involved in each model, the SIMULINK model files are provided to
+ allow you to explore the design yourself.  You will even find
+ these models to be useful starting points for various simulation
+ tasks you may be working on right now!
+
+        Paul Barnard
+        barnard@mathworks.com
+
+===================================================================
+4/12/96
+RIOTS_v.1.beta
+
+ RIOTS is  a group of  programs and  utilities that solve  a very broad
+ class of finite-horizon optimal control problems.  This class includes
+ problems with:
+
+  * Lagrange, Bolza and Mayer type objective functions
+  * Linear or nonlinear dynamics
+  * Min-Max objective functions
+  * Free final time problems
+  * Variable initial conditions
+  * Endpoint equality and inequality constraints
+  * Trajectory inequality constraints on the states and controls
+  * Simple bounds on the controls and free initial conditions
+
+ The user can supply objective, constraint, and dynamics functions  as
+ either object code or M-files. Derivatives of theses functions should
+ also be supplied.
+
+ A complete  description  of RIOTS  is  contained in  the  RIOTS User's
+ Manual (100 pages).  A postscript version of user's manual is available
+ in the file 'manual.ps'.
+
+ Some parts of RIOTS require other programs which the user must obtain.
+ These programs are: LSODA, Linpack, and  either CFSQP or NPSOL.  RIOTS
+ can  be  used on a  subset of  optimal control problems  without these
+ programs.  This is explained in the manual.
+
+ Written by Adam L. Schwartz, PhD
+ Electrical Engineering Dept.
+ University of California at Berkeley
+ Phone: (510) 642-4257
+        (510) 848-9902
+ Email: adams@eecs.berkeley.edu
+
+===================================================================
+4/12/96
+ftp://ftp.mathworks.com/pub/contrib/tools/mprof 
+
+ MATLAB profiler (written in Perl) converts an M-file to a
+ profilable M-file.
+
+ Niclas Borlin                       email: Niclas.Borlin@cs.umu.se
+ Department of Computing Science     phone: (+46) 90-166832
+ Umea University                       fax: (+46) 90-166126
+ S-901 87 Umea, SWEDEN            lat/long: 63.49 N, 20.19 E
+
+==================================================================
+4/17/96
+ftp://ftp.mathworks.com/pub/contrib/signal/ellipfilt: 
+
+ MATLAB M-files allow to compute Elliptic filters,
+ and EFIXDEMO.M, which is a demo script file.
+
+        Bernard Gosselin.
+        Faculte Polytechnique de Mons
+        Belgium
+        gosselin@tcts.fpms.ac.be
+
+========================================================
+4/18/96
+ftp://ftp.mathworks.com/pub/contrib/misc/whs.m:
+
+ Filter function for the whos command. It displays
+ variables starting with a given letter.
+
+        Dr. David Pommerenke,
+        Technical University Berlin
+        Email: pomme@ee.tu-berlin.de
+===================================================================
+4/21/96
+ftp://ftp.mathworks.com/pub/contrib/graphics/eztools/
+
+ Eztools are a set of gui controls to aid in annotating MATLAB
+ figures.  Separate portions of Eztools can be called directly
+ from the command line, or the entire set of routines can be
+ added to the current plot by typing "eztools" from the
+ command line.
+
+ Eztools was patterned after Keith Roger's MAT-menus, modified
+ to include the ez routines.  Eztools also uses Eric Johnson's
+ arrow.m routine and the "subzoom.m" written by Doug Harriman.
+
+        Richard G. Cobb
+        email: rcobb@afit.af.mil
+
+   -----------------
+ [CR]
+
+
+******************************************************
+Date sent:        Wed, 18 Sep 1996 08:25 +0000
+From:             mathworks-bounceback@mathworks.com
+Subject:          New MATLAB 3rd Party Directory
+Forwarded to:     dmeko@ltrr.arizona.edu
+To:               dmeko@CCIT.ARIZONA.EDU
+Send reply to:    info-product@mathworks.com
+
+Dear David Meko:
+
+The MATLAB Connections Directory provides you with a 
+clearinghouse for information on MATLAB based products and 
+services from third-party providers. This valuable collection 
+describes third-party toolboxes for MATLAB and blocksets for 
+SIMULINK, interfaces to complementary software and hardware 
+products, training programs, and consulting services.
+
+Here are just a few of over 100 diverse listings:
+
+- Single and multiprocessor targets for Real-Time Workshop,
+  for rapid prototyping of controls systems and hardware-in
+  the-loop simulation
+
+- SIMULINK block libraries for modeling mechanical, vehicle
+  powertrain, and other systems
+
+- Interface to a Verilog simulator and software in-circuit
+  emulator for combined hardware/software testing and timing
+  analysis in electronic design
+
+- Third-party toolboxes for pattern recognition, geometric
+  bounding, and other techniques
+
+- Interfaces to multibody dynamics software tools
+
+- Instrument-grade data acquisition with MATLAB based GUIs
+  for dynamic system analysis
+
+- Engineering consultants specializing in process control
+  modeling, signal processing, controls, communications,
+  mechatronics, and other application areas
+
+Visit our Connections homepage which always has the most 
+up-to-date listings and is the easiest to use. You can order
+a free book version from the Connections homepage.
+The URL address is: http://connections.mathworks.com
+
+If you do not have access to the Web, obtain your FREE copy
+of the MATLAB Connections Directory by simply replying to 
+this message. When you reply please be sure to include your 
+address block below and we'll mail you the MATLAB Connections
+Directory.
+
+Sincerely,
+
+
+Elizabeth G. Callanan
+Connections Program Manager
+The MathWorks, Inc.
+
+
+
+ADDRESS BLOCK
+-------------
+Contact ID: 13531
+David Meko
+Univ of Arizona
+Tree Ring Laboratory
+W Stadium
+
+Bldg 58, Rm 105B
+Tucson, AZ, 85721
+Phone: (602)621-3457
+Code: E-EM-CNX-0996/420v1/KP121
+
+
+*****************************************
+
+Date sent:        Wed, 02 Oct 1996 23:26:10 -0400 (EDT)
+From:             MATLAB Digest <mathworks-bounceback@mathworks.com>
+Subject:          The MATLAB Digest; Volume 4, number 5
+Forwarded to:     dmeko@ltrr.arizona.edu
+To:               dmeko@CCIT.ARIZONA.EDU
+Send reply to:    matlab-digest@mathworks.com
+
+        The MathWorks MATLAB Digest
+         Sept 1996
+     Volume 4, number 5
+
+ =====================
+ Table of Contents
+ =====================
+
+          o 1997 MATLAB Conference: A Sneak Preview
+          o Upcoming Conferences and Tradeshows
+          o New Product Announcements
+          o Top "6" Technical Notes
+            o What C and Fortran compilers are supported by MATLAB, SIMULINK,
+              and the MATLAB Compiler on the PC and the Mac?
+            o How can I save files with a ".m" extension under Windows
+              95?  
+            o Can I create multidimensional (3-D and N-D) arrays in
+              MATLAB 4.x? 
+            o Why does importing metafiles into MS Word or PowerPoint result
+              in a graph with a black box over it? 
+            o What are the system requirements for running MATLAB 4.2c under
+              Linux? 
+            o Installing Notebook while running MS Word 7.0, produces the error
+              message: WordBasic Err=582?
+          o New on The MathWorks Web
+          o New Files on the FTP Site
+
+    -----------------------------------------------------------
+   The MathWorks MATLAB digest is a monthly electronic newsletter
+   sent to subscribing users. To add yourself to the mailing
+   list, send e-mail to subscribe@mathworks.com (please include
+   your siteid or license number). To remove yourself, send
+   e-mail to unsubscribe@mathworks.com. Send
+   submissions/questions/comments to digest@mathworks.com.
+
+     Carolyn Romano             FTP :  ftp.mathworks.com [144.212.100.10]
+     The Mathworks, Inc.        WWW :  http://www.mathworks.com
+     cromano@mathworks.com      WWW :  http://finprod.mathworks.com
+    WWW :  http://education.mathworks.com
+    WWW :  http://connections.mathworks.com
+    INFO:  info@mathworks.com  
+
+    -----------------------------------------------------------
+ 1997 MATLAB Conference
+
+
+   Join us at the 1997 MATLAB Conference, being held October 6-8 at the
+   Fairmont Hotel in San Jose, California. In 1995, the MATLAB
+   Conference was attended by over 500 users from 24 countries. The 
+   conference program combined special sessions by industry leaders;
+   two-hour minicourses; expository talks; and user-contributed
+   presentations. Minicourses and expository talks were provided by our
+   engineering staff  and our toolbox authors, as well as experts in
+   the educational, automotive, engineering, and other related fields.  
+
+   The 1997 MATLAB Conference will provide an aggressive technical
+   program. The program incorporates interactive discussions that
+   reveal helpful hints and shortcuts for MathWorks products; product
+   demonstrations that illustrate how you can program with speed; and
+   Q&A sessions that answer your specific questions. 
+
+   Attendees will have the opportunity to interact with the MathWorks
+   technical staff and their fellow users; to learn "hands-on" about
+   MathWorks products in minicourses; to receive "sneak previews" of
+   forthcoming MathWorks products; and to keep up-to-date with the latest
+   industry developments. 
+
+   Stay Tuned and visit:  http://conference.mathworks.com
+
+    -----------------------------------------------------------
+ Upcoming Conferences and Tradeshows
+
+   DSP World Expo
+   October 8-10
+   Boston, MA
+   Booth # 533/535
+
+   IAFE  (International Association of Financial Engineers)
+   October 17-18
+   New York, NY
+
+   ASME International Mechanical Engineering Congress & Expo
+   November 17-22
+   Atlanta, GA
+   Booth # 726/728
+
+   Photonics East
+   November 19-21
+   Boston, MA
+   Booth #1003
+
+    -----------------------------------------------------------
+ New Product Announcements
+
+   o The Higher-Order Spectral Analysis Toolbox 2.0
+
+    Previously known as the Hi-Spec Toolbox, the new Higher-Order
+    Spectral Analysis Toolbox 2.0 contains specialized tools for signal
+    processing with higher-order spectra. It provides access to algorithms
+    at the forefront of signal processing technology. The Higher-Order
+    Spectral Analysis Toolbox was developed by Jerry Mendel, C. L. (Max)
+    Nikias, and Ananthram Swami of United Signals and Systems, Inc. This
+    toolbox is for use with MATLAB. 
+
+    For additional information, please send mail to info@mathworks.com or
+    point your browser to http://www.mathworks.com/hosa.html.
+
+   o The Mu-Analysis and Synthesis Toolbox 3.0
+
+    The MathWorks is pleased to announce The Mu-Analysis and
+    SynthesisToolbox 3.0. The Mu-Analysis and Synthesis Toolbox, for
+    MATLAB is a suite of tools for the design of robust control
+    systems. This toolbox includes synthesis and analysis tools that
+    help the user create optimal H-infinity control systems using
+    advanced Mu-synthesis techniques. With this toolbox, users can
+    develop and analyze multi-input/multi-output (MIMO) control
+    systems that remain stable even in the presence of model uncertainty. 
+
+    For additional information, please send mail to info@mathworks.com or
+    point your browser to http://www.mathworks.com/mutools.html.
+
+   o The Statistics Toolbox 2.0
+
+    The MathWorks is pleased to announce Statistics Toolbox 2.0. The new
+    version contains more than 200 M-files that build on the strengths of
+    the previous version (e.g. probability distributions), and add a
+    number of major new statistical methods for analyzing data, modeling
+    system behavior, and developing algorithms that incorporate statistics.
+
+    For additional information, please send mail to info@mathworks.com or
+    point your browser to http://www.mathworks.com/stats.html.
+
+    -----------------------------------------------------------
+ Top "6" Technical Notes
+
+  1.) What C and Fortran compilers are supported by MATLAB, SIMULINK,
+      and the MATLAB Compiler on the PC and the Mac?
+
+ The following compilers are supported as of January 1996:
+
+ PLEASE NOTE: Only the version numbers listed are supported.
+
+
+ C Compilers Supported by the MATLAB Compiler and the MATLAB Math Library:
+
+ MS-Windows
+
+ To create MEX-files with the MATLAB Compiler, you must install and
+ configure one of the following supported ANSI C compilers:
+
+    o  WATCOM C version 10.0 or later
+    o  MetaWare High C version 3.0 or later
+
+
+ To create stand-alone external applications with the MATLAB Math
+ Library, you must install any 32-bit ANSI C compiler that creates
+ Win32 executables or Windows-NT console applications.  The MATLAB C
+ Math Library supports two compilers: WATCOM 10.x and Microsoft Visual
+ C++ 2.x.  Please refer to page 2-22 of the MATLAB C Math Library
+ guide. 
+
+
+ See page 2-5 of the MATLAB Compiler Guide.
+
+ NOTE: To be able to execute 32-bit stand-alone executable
+       applications, you must have WIN32S installed.  WIN32S is an extension
+       to Windows 3.1 (which is a 16-bit operating system) that allows you to
+       run some 32-bit applications.  Please refer to MS-Windows
+       documentation for more information on WIN32S.
+
+
+ Macintosh
+
+ To create MEX-files or stand-alone external applications with the
+ MATLAB Compiler, you must install and configure one of the following
+ supported C compilers:
+
+ Power Macintosh:
+ MPW MrC 1.0b2
+ MPW PPCC 1.0.5
+ Metrowerks CodeWarrior C 7 (CodeWarrior 5 and 6 users should read the
+ README  file in the "CodeWarrior 5-6" folder on the installation
+ disk). 
+
+ 680x0 Macintosh:
+ MPW C 3.4
+
+
+ UNIX Workstations
+
+ To create MEX-files or stand-alone external applications with the
+ MATLAB Compiler, you must install and configure an ANSI C compiler.
+
+ Note: The C Compiler that Sun provides with SunOS 4.1.X is not an ANSI
+       C compiler. However, ANSI C compilers for this operating system
+       are available from several vendors.
+
+ To create stand-alone external applications, you must also install the
+ MATLAB C Math Library.
+
+     ********************
+
+ The compilers listed below are supported by the MATLAB External
+ Interface (e.g. when creating MEX-files, MAT-files and Engine
+ programs).
+
+ PC
+
+ Compilers supported for V4.2 under MS-Windows 3.1
+
+      o  Borland C++ 3.1 (for MATLAB versions v4.2, v4.2a, v4.2b only)
+      o  Borland C++ 4.0
+      o  Microsoft C version 8 (for MATLAB versions v4.2, v4.2a, v4.2b
+         only) 
+      o  Microsoft Visual C++ 1.0 (for MATLAB versions v4.2, v4.2a,
+         v4.2b only) 
+      o  Microsoft Visual C++ 1.5 (as of MATLAB v4.2c only--bundles
+         the C v8.0 compiler) 
+
+  NOTE: Microsoft is no longer selling Microsoft Visual C++ 1.5
+         (MSVC++ 1.5). However, the CD-ROM version of MSVC++ 2.0
+         appears to come bundled with MSVC++ 1.5 as well.  MSVC++ 2.0
+         is NOT supported in MATLAB v4.2c or prior versions. 
+
+      o  Metaware High C 3.1 (requires Phar Lap linker v4.1 or v5.0) 
+  engine is not supported for this compiler)
+      o  Watcom C 9.5 (9.0 is not supported)
+      o  Watcom C 10.0 (supported as of v4.2c but compatible CMEX
+  libraries for prior MATLAB versions available via ftp)
+
+  NOTE:  WATCOM offers two v9.5's of their compilers: 
+
+      o  Watcom C v9.5 32-bit C compiler for DOS (not tested/may work)
+      o  Watcom C v9.5 32-bit C++ compiler (supported)
+      o  Microway NDP FORTRAN v4.4 (requires Phar Lap linker v4.1 or
+         v5.0). 
+
+ MATLAB V4.0 for Windows:
+
+      o  Metaware High C 3.03 (requires Phar Lap linker v4.1 or v5.0) 
+  (engine is not supported for this compiler)
+      o  Watcom C 8.5, 9.0 (does not need the Phar Lap linker)
+      o  Microway NDP FORTRAN 4.0.2 (requires Phar Lap linker v4.1 or
+         v5.0) 
+      o  Microsoft C 7.0
+      o  Microsoft Visual C++ 1.0
+      o  Microsoft C++ 7.0
+      o  Microsoft C 8.0 (MATLAB for Windows v4.0 supports Microsoft
+  Visual C++ (C 8.0) using the same settings as Microsoft C/C++
+  7.0. When you set the location of the SDK in the CMEX.BAT
+         file, set the SDK_ROOT to the location where Visual C++ has
+         been installed.) 
+
+ The Real Time Workshop and Accelerator (V1.0 for Windows)
+
+  For Real Time Workshop:
+     Watcom C 9.5 and 10.0
+     MetaWare 3.1 (requires Phar Lap linker v4.1 or v5.0)
+
+  For the Accelerator:
+     Watcom C 9.5 and 10.0
+     MetaWare 3.1 (requires Phar Lap linker v4.1 or v5.0)
+
+  Compilers supported for V4.2 under OS/2 2.1
+     Watcom C 10.0
+     Borland C++ 4.0
+
+ Compilers supported for V4.2 under MS-Windows NT
+
+     Watcom C 10.0
+     Borland C++ 4.0
+     MetaWare High C 3.1 (Requires Phar Lap linker v4.1 or
+            v5.0) 
+     Microsoft Visual C++ 1.5
+
+ Compilers supported for V4.2 under a Kanji NEC machine
+
+     Watcom C 10.0
+     Microsoft Visual C++ 1.5
+
+ NOTES:
+
+    1.  As noted in the SIMULINK release notes, page 1-11:
+
+ Due to a special 32-bit parameter passing mechanism that is 
+ used to optimize the performance of S-function MEX-files,
+        16-bit DLL MEX-files compiled with Microsoft and/or Borland C
+        compilers do not operate correctly and hence are unsupported
+        in version 1.3 of SIMULINK."
+
+    2.  Although C++ compilers are listed above, only standard C
+ MEX-functions are supported.  C++ MEX-functions are not
+        supported. 
+
+ Other compilers
+
+    o   Phar Lap linker (version v4.1 through v5.x) is also required for
+ some non-Microsoft compilers, such as Metaware High C and
+        Microway NDP FORTRAN.  (Note that Phar Lap linker version 6.0
+        is not currently supported). 
+
+    o   Microsoft Powerstation FORTRAN will not be supported until
+        v5. We do not have any plans to support Microsoft FORTRAN v5.1
+        since it is not a 32-bit compiler.
+
+    o   FORTRAN 77 (F77): Several customers have tried to use this
+ compiler but were unsuccessful due to incompatibilities in the
+ library format. We use the Phar Lap linker REX format for our 
+ FORTRAN libraries.  The Watcom F77 compiler supports these
+        libraries but requires that you convert these libraries to
+        another format, then link, and convert back.  We have not been
+        able to make this work. 
+
+ Additional Compiler Information
+
+    o   The MathWorks does not recommend any one of the four supported
+ C compilers over any of the others. We have gathered the
+        following information about each compiler:
+
+    1.  Metaware High C - Requires Phar Lap linker, making it more
+ expensive to generate MEX-files.  However, it seems to compile
+ faster, so users who do a lot of compiling while writing code,
+ may be willing to pay the extra price.  Generates REX
+ MEX-files, which are 32-bit code objects that are faster than
+        16-bit code such as DLLs.
+
+    2.  Watcom C - The linker that comes with Watcom C generates 32-bit
+ REX MEX-files, so    the  Phar Lap  linker  is   not
+        necessary. Code compilation may be slower than High C, but the
+        MEX-files should run at about the same speed when called from
+        MATLAB. 
+
+    3.  Microsoft Visual C++ - generates 16-bit DLL MEX-files.  These
+ are slower than REX MEX-files, and require a 32-to-16 bit
+        interface between MATLAB and the code, which slows the code
+        down further. However, DLL MEX-files allow access to Microsoft
+        Windows's API, so things like standard dialog boxes, buttons,
+        etc., can be generated and accessed from a DLL MEX-file.
+        Other Dynamically Linked Libraries can also be accessed from a
+        DLL MEX-file. 
+
+    4.  Borland C++ - like Microsoft Visual C++, also generates 16-bit
+ DLL MEX-files.  However, due to the fact that the Borland C
+        compiler does not support the huge memory model for 16-bit
+        DLLs, MATLAB variables in a MEX-file created with Borland are
+        limited to 8192 elements.  However, the Borland compiler is
+        usually cheaper, so there is a tradeoff between these two
+        factors. 
+
+ Mac
+
+ MATLAB V4.2a, 4.2 and 4.1
+
+  Think C 5.0 + 6.0
+  MPW C 3.2
+  Language Systems FORTRAN 3.0
+  MacFORTRAN II 3.1  (Absoft)  This is MPW based.
+
+  Think C 6.0 has not been officially tested, but we do not
+         expect any problems with it.  For discussion on using
+         versions of Think C later than 5.0, see the bottom of pg.1-8
+         of the MATLAB External Interface Guide for the Macintosh. 
+
+ V4.2d for the PowerMac (pre-release version)
+
+  The Pre-Release version supports only MPW PPCC v. 1.0.
+
+ V4.2c for the PowerMac
+
+  Metrowerks CodeWarrior C v.5.0
+  MPW PPCC v.1.0
+  Language Systems FORTRAN v.1.0
+  Absoft MacFORTRAN v.4.0.1.
+
+ V4.2c for the Mac 680x0
+
+  Symantec Think C v.7.0
+  MPW C v.3.2
+  Language Systems FORTRAN v.3.0
+  Absoft MacFORTRAN II v.3.1
+
+ Information on purchasing compilers
+
+ PC
+
+ Metaware
+ 2161 Delaware Ave
+ Santa Cruz, CA 95060
+ Phone:  408-429-META
+
+ Microway (NDP FORTRAN)
+ Kingston, MA
+ Phone:  508-746-7341
+
+ Phar Lap 
+ Fax:  617-876-2972
+ Phone: 617-661-1510
+ Email: tech-support@pharlap.com
+
+ Watcom
+ 415 Phillip Street
+ Waterloo, Ontario
+ Canada N2L 3X2
+ Phone:  519-886-3700
+
+ Borland
+ 1800 Green Hills Road
+ P.O. Box 660001
+ Scotts Valley, CA  95067-0001
+ Phone: 408-438-5300
+
+ Microsoft:
+ Call Microsoft Sales and ask
+ for End User Sales.
+ MS Sales Phone: 800-426-9400
+
+ MAC
+
+ Absoft
+ 2781 Bond St
+ Rochester Hills, MI 48309
+ Phone:  313-853-0095
+
+ Apple Computer (MPW)
+ Phone:  408-996-1010
+ 1-800-282-2732 (U.S.)
+
+ Language Systems
+ 441 Carlisle Dr
+ Herndon, VA 22070
+ Phone:  703-478-0181
+
+ Metrowerks
+ 1500 du College, suite 300
+ St. Laurent, QC
+ Canada H4L 5G6
+ Phone:  514-747-5999
+
+ Symantec Corp. (Think C)
+ 10201 Torre Ave.
+ Cuperto, CA  95014
+ Phone:  408-253-9600
+
+ Note that both the Borland and Microsoft compilers can be purchased
+ at most software stores, and the easiest way to get information about
+ these compilers is via your local software retailer.
+
+ ----------------------------------------------------------------
+
+ 2.) How can I save files with a '.m' extension under Windows 95?
+     Everytime I try to save files with a '.m' extension, they show up
+     having a '.txt' or '.m.txt' extension.
+
+ In Windows 95, if you save a file with which has an unregistered
+ extension, Notepad will automatically append the registered extension
+ '.txt'.  If you register the '.m' extension, Notepad will no longer
+ append the '.txt' extension.
+
+ To register .m as a viable extension, please do the following:
+
+ - open up 'My Computer'
+ - click on the View menu
+ - choose Options
+ - choose the File Types tab
+ - Select 'New Type'
+ - type 'M-file' in the 'Description of type' field.
+ - type '.m' in the 'Associated extension' field
+ - click on 'New' to open the Actions window
+ - type 'open with Notepad' in the Action field
+ - Use the browse button to find NOTEPAD.EXE for the
+   'Application used to perform action' field
+ - click OK to close 'New Action' window
+ - click OK to close the 'File Type' window
+
+ This will allow you to save text files with a '.m' extension instead
+ of a '.m.txt' extension.
+
+ ----------------------------------------------------------------
+
+ 3.) Can I create multi-dimensional (3-D and N-D) arrays in MATLAB 4.x?
+
+ There is no direct way to access more than two dimensions in MATLAB
+ v4.x.  It is possible, however, to create your own functions in MATLAB
+ to handle multi-dimensional arrays.  The following is an example that
+ maps a three-dimensional array to a single vector.  The indices are
+ passed to a function as if it is a 3-D array and they are then
+ translated to a single vector with corresponding offsets.  The exact
+ implementation will be specific to what you want to accomplish.
+
+      o function position = index3(d,i,j,k)
+      o % INDEX3   POSITION = INDEX3(d,i,j,k) indexes a 3-D array
+      o % i,j, and k are the indices of interest.
+      o % d is a 3-element vector that specifies the dimensions
+      o % of the array.
+      o % This function only works when your dimensions are equal. 
+      o % e.g. a 3x3x3.
+      o position = (i+(j-1)*d(2)+(k-1)*d(2)*d(3));
+
+ The following is an example of how you might use this function.
+
+      D = [3 3 3];               % D defines the dimensions as
+     % 3x3x3
+      A1 = [ 1  2  3;
+      4  5  6;
+      7  8  9];           % Set up the three arrays to 
+     % stack
+      A2 = [10 11 12;
+     13 14 15;
+     16 17 18];
+      A3 = [19 20 21;
+     22 23 24;
+     25 26 27];
+      A3D = [A1 A2 A3];          % A3D is where your 3-D data is
+     % stored
+      B1 = A3D(index3(D,1,3,2)); % 1st row, 3rd column, 2nd 
+     % matrix
+      A3D(index3(D,1,3,2)) = 77; % Write to it
+      B2 = A3D(index3(D,1,3,2)); % Read from it
+
+ It is possible to create N-dimensional arrays with different limits on
+ each dimension.  The main difference is that the offset will change so
+ that it correctly indexes through your matrix. Each additional
+ dimension will require a corresponding offset.  You can add error
+ checking for the indices to make sure you do not go out of bounds.
+
+ You can also emulate 3-D arrays by packing them into 2-D arrays with
+ the meshgrid function.  For example, given three arguments
+
+      [X,Y,Z] = meshgrid(x,y,z)
+
+ grids and packs the data into matrices like
+
+      X = [X1(:) X2(:) X3(:) ...]
+
+ where each Xi(:) is the gridded matrix for a fixed value of Z (a
+ similar packed matrix is used for Y and Z).  That is, a m-by-n-by-p
+ array is packed into a (m*n)-by-p matrix.
+
+ The routine slice uses this packed format to display a "slice" through
+ the data. The M-files for meshgrid and slice are short so if you study
+ these you should be able to understand what is going on.  Since MATLAB
+ only knows about the row and column dimensions you have to have an
+ additional piece of information to determine the size of the 3-D array
+ (slice uses the number of rows).
+
+ We also do some 3-D packing for the image deck format in the Image
+ Processing Toolbox.  If you have that toolbox, look at the routines
+ imslice and montage.
+
+
+ 4.) Why does importing metafiles into MS Word or PowerPoint result in a graph
+     with a black box over it?
+
+ This problem is due to the fact that many graphics packages, to which
+ MATLAB generated metafiles may be exported, do not provide the
+ extensive support of MS-Windows graphics that is needed to accurately
+ display MATLAB graphics.  Hence, when importing graphics into Word,
+ PowerPoint or other Windows applications, the MATLAB graph can lose
+ its color information (i.e. you get a black box over the graph).  As a
+ workaround, MATLAB provides a function that limits metafile rendering
+ to a lowest common denominator mode.
+
+ Issue the command:
+
+   system_dependent(14,'on')
+
+ after you have displayed the plot and before copying it to the
+ metafile.
+
+ Please see page 85 of the MATLAB Release Notes for more information.
+
+ ----------------------------------------------------------------
+
+ 5.) What are the system requirements for running MATLAB 4.2c under
+     Linux? 
+
+ MATLAB requires the Linux '95  V1.2 kernel configured to support ELF
+ binaries. Detailed system requirements are available on The MathWorks
+ FTP server:
+
+      ftp.mathworks.com:/pub/tech-support/outgoing/linux/readme.lnx
+
+ MATLAB 4.2c for Linux is available on The MathWorks CD-ROM Volume V
+ and later, along with the images for the other supported UNIX
+ platforms.  The CD-ROM is currently the only medium for delivering the
+ Linux release.  If you are an existing UNIX customer and you want to
+ run MATLAB for Linux, contact your sales representative for
+ licensing options and to request the latest version of The MathWorks
+ CD-ROM.
+
+ For general sales and product information send e-mail to
+ info@mathworks.com or call 508-647-7000.
+
+ ----------------------------------------------------------------
+
+ 7.) Installing Notebook while running MS Word 7.0, produces the error
+     message: WordBasic Err=582?
+
+ Installing Notebook while running MS Word 7.0, produces the following
+ error message:
+
+   WordBasic Err=582
+
+ Is there some problem in the DDE communication between MATLAB and
+ Microsoft Word 7?
+
+ Solution 
+
+ The MATLAB Notebook Suite was designed with Microsoft Word version 6.
+ Microsoft made some changes in Word 7.0 that affects the way Notebook
+ works.
+
+ There is a patch that you can download from our FTP site that should
+ allow you to be able to use Word 7.0 with the Notebook Suite.  Please
+ read the README file for instructions on how to install the patch and
+ for any limitations it may have.   The patch can be found at
+
+   ftp://ftp.mathworks.com/pub/mathworks/toolbox/notebook/word7
+
+ To connect to our FTP site, log in as anonymous and use your e-mail
+ address as the password.
+
+
+
+       -----------------------------------------------------------
+ New on The MathWorks Web
+
+    Sept 1, 1996 --- MATLAB Connections  
+     The MATLAB Connections Directory is a broad collection of
+     commercially available products and services based on the MATLAB
+     technical computing environment. This directory listof third-
+     party products and services that complement MATLAB and
+     SIMULINK. These products and services result from collaboration 
+     with organizations from all over the world. The solutions listed
+     in this directory are the natural outgrowth of the MathWorks
+     philosophy: to combine best-of-class tools with an open
+     architecture that enables everyone to customize and extend the
+     MATLAB environment. 
+
+   August 26, 1996 --- The new Higher-Order Spectral Analysis Toolbox 2.0
+    Previously known as the Hi-Spec Toolbox, the new
+    Higher-Order Spectral Analysis Toolbox 2.0 
+    contains specialized tools for signal processing with higher-order
+    spectra. It provides access to algorithms at the forefront of
+    signal processing technology. 
+
+   August 12, 1996 --- Spring 1996 News & Notes
+    The spring edition of News & Notes is now available. This issue
+    contains :  
+     * NewsBriefs 
+     * Wavelet Toolbox helps you apply new techniques. 
+     * Statistics Toolbox 2.0 offers new GUI, plotting, analysis
+       functions.  
+     * Get up to speed with MATLAB using new video.. 
+     * Mu-Analysis and Synthesis Toolbox 3.0 makes advanced
+       control design methods easier to learn and apply. 
+     * MATLAB-Based Books New releases in an ongoing series. 
+     * Third-party products Link-RT (Loughborough Shound Images,
+       Ltd.), Medical Anatomy & Function Imaging Toolbox (PET
+       Center, Good Samaritan Hospital), Vehicle Powertrain
+       Blockset (Ricardo Consulting Engineers, Ltd.).  
+
+   July 29, 1996 --- 1997 MATLAB Conference
+     Join us at the 1997 MATLAB Conference, being held October 6-8 at
+     the Fairmont Hotel in San Jose, California. The 1997 MATLAB
+     Conference will provide an aggressive technical program and will
+     invite users to participate in our Call for Papers process. 
+
+
+
+     -----------------------------------------------------------
+   New Files on the FTP Site
+
+      -----------------------------------------------------------
+
+    ftp.mathworks.com  [144.212.100.10]
+    Log in as "anonymous", give e-mail address as password.
+
+    Can't ftp? You can access all the files on the ftp site
+    through e-mail. Send e-mail to matlib@mathworks.com with
+    the body of the message containing the commands to be
+    executed. Send the message "help" (without quotes) for
+    syntax details.
+
+    Don't know how? Send an e-mail to matlib@mathworks.com with
+    the body (not the subject line) containing the words
+    "send ftphelp" (no quotes).
+
+    Have some code you would like to share with other
+    MATLAB & SIMULINK users? Get the file /README.incoming
+    and/or send e-mail to ftpadmin@mathworks.com.
+
+    For a hypertext index, point your favorite web browser to
+      http://www.mathworks.com/ftpindex.html
+
+      -----------------------------------------------------------
+
+
+ftp://ftp.mathworks.com/pub/contrib/optim/lpsolver/
+
+ This directory contains a set of M-files that perform the two
+ phase simplex method.  The M-files are LINPROG, PHASEI and
+ PHASEII. LINPROG is the core function, and it calls PHASEI and
+ PHASEII as subroutines.  (PHASEI and PHASEII can also
+ be run as independent functions.)  Each function provides a
+ self-explanatory output display that includes reports on
+ feasibility, optimality, unboundedness or cycling, as appropriate.
+ Further, each M-file contains a substantial MATLAB "help" header.
+
+     This subdirectory on the disk contains a collection of *.MAT
+ files that contain some basic examples, two *.txt files that
+ contain sample output, and the three M-files renamed with .DOC
+ extensions to indicate that they are fully documented versions
+ of the M-files.  The three M-files in this subdirectory are written
+ to run under MATLAB 4.0.
+
+        Jeffrey L. Stuart
+        Department of Mathematics
+        University of Southern Mississippi
+        jeffrey_stuart@bull.cc.usm.edu
+
+Date of submission: 7/26/96
+===================================================================e
+ftp://ftp.mathworks.com/pub/contrib/math/randmat
+
+ This directory contains a set of M-files that I have found useful for
+ working on research problems in combinatorial matrix theory.  The
+ most fundamental of these files are signs.m, which generalizes
+ MATLAB's sign function, and signprod.m, which determines the
+ generalized signs of the product of two vectors or matrices.  These
+ files in conjunction with the battery of random matrix generators in
+ the subdirectory in RANDOM provide a wide variety of signed matrices 
+ with specified combinatorial properties, and the tools to
+ examine the combinatorial properties of those matrices.
+
+
+        Jeffrey L. Stuart
+        Department of Mathematics
+        University of Southern Mississippi
+        jeffrey_stuart@bull.cc.usm.edu
+
+Date of submission: 7/26/96
+=================================================================== 
+ftp://ftp.mathworks.com/pub/contrib/linalg/rbdiag.m:
+
+ The function rbdiag(A1,A2) generates a block diagonal matrix
+ with diagonal blocks A1 and A2.  This M-file is designed for
+ recursively generating a block diagonal matrix.  Thus
+ rbdiag(A1,rbdiag(A2,rbdiag(A3,A4))) produces the block diagonal
+ matrix whose diagonal blocks are  A1, A2, A3, A4  in that
+ order.
+
+       For convenience, rbdiag(A1) = A1.
+       See also BDIAG.
+
+       May 1994
+       Jeff Stuart, Department of Mathematics
+       University of Southern Mississippi
+       jeffrey_stuart@bull.cc.usm.edu
+
+Date of submission: 7/26/96
+===================================================================
+ftp://ftp.mathworks.com/pub/contrib/linalg/signs.m:
+
+ returns a vector or matrix that is the same size as
+ the input,whose entries are +1,-1, 0 or NaN according
+ to whether the corresponding entries of the input are
+ positive, negative, zero of NaN.
+
+ Jeff Stuart, USM Math Department, April 1996.
+ jeffrey_stuart@bull.cc.usm.edu
+
+Date of submission: 7/26/96
+===================================================================
+ftp://ftp.mathworks.com/pub/contrib/linalg/bdiag.m:
+
+ The function bdiag(A1,A2,...,Ak), where k <= 10, generates the
+ block diagonal matrix whose diagonal blocks are the matrices
+ A1, A2, ... , Ak in that order.  In the event that you
+ need k > 10 , simply nest one or more calls for bdiag.
+
+       May, 1994
+       Jeffrey L. Stuart
+       jeffrey_stuart@bull.cc.usm.edu
+
+Date of submission: 7/26/96
+===================================================================
+ftp://ftp.mathworks.com/pub/contrib/model/GRT
+
+  Introduction To The General Recognition Theory Toolbox
+  ======================================================
+
+ This is a package of MATLAB programs to generate and analyze
+ data for psychology experiments based on the General
+ Recognition Theory.
+
+       Leola A. Alfonso-Reese
+       Psychology Department
+       University of California
+       Santa Barbara, CA  93106
+       reese@condor.psych.ucsb.edu
+
+July  26, 1996
+======================================================================
+ftp://ftp.mathworks.com/pub/contrib/stats/uroot.m:
+
+ Augmented Dickey-Fuller Test for Unit Roots
+
+ The usual t-statistics and F-statistics are not applicable to
+ determine whether or not a sequence has a unit root.  Dickey and
+ Fuller (1979, 1981) provide the appropriate test statistics to
+ determine whether a series contains a unit root, unit root plus
+ drift, and/or unit root plus drift plus a time trend.  The tests
+ can also be modified to account for seasonal unit roots.  If the
+ residuals of a unit root process are heterogeneous or weakly
+ dependent, the alternative Phillips-Peffon test can be used.
+ For the Dickey-Fuller test, one of the most important is to see
+ if the process contains unit root with any drift and/or a time
+ trend. Be aware that the statistical value t-statistics do
+ depend on whether an intercept and/or time trend is included in
+ the regression equation. In their Monte Carlo study, Dickey
+ and Fuller (1979) found that the critical values for
+  coefficient = 0 depend on the form of regression and sample
+ size. As in most hypothesis tests, for any given level of
+
+

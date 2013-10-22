@@ -1,0 +1,106 @@
+
+Standardization steps: 1) measured ring width transformed as
+needed to remove dependence of variance on mean, 2) trend line
+(age curve) fit to transformed ring width, 3) core index computed
+as difference of transformed ring width and age curve, 4) tree
+index computed as average of core indices for each tree, 5) site
+index (standard chronology) computed as mean of tree indices (or
+as biweight mean if six or more trees in year). Residual
+chronology computed likewise except that autoregressive residuals
+of core indices used in step 4. 
+
+Ring-width transformation in (1) above selected from family of
+commonly used power transformations using slope of
+spread-versus-level plot as guide (Hoaglin et al. 1983).
+Candidate transformations include log10, and ring width raised to
+various powers: -2, -1, -2/3, -1/2, -1/3, 1/3, 1/2, 2/3, 1 (no
+transformation), 2, 3. Graphical quality control used to avoid
+over-transformation. Smallest nonzero measured ring width added
+if necessary before transformation to avoid infinite values in
+transformed series. Transformed series linearly scaled and
+shifted such that minimum and median of transformed ring width
+equal minimum and median of measured ring width. This procedure,
+called "matching", is described by Hoaglin et al. (1983, p. 114)
+
+Detrending in two passes. First pass is automatic fitting of the
+most flexible possible cubic smoothing spline that is monotonic
+non-increasing throughout and that has a decreasing curvature
+(positive second derivative) over the second half of the series.
+This spline is achieved by iteratively increasing the spline
+parameter, starting with a spline whose amplitude of frequency
+response is 0.5 at a wavelenth twice the sample length.
+
+Second pass is optional manual overriding of the automatic
+curve-fits guided by review of time series plots of the fitted
+trend line overlaid on the ring widths. This step taken to avoid
+curves that are overly flexible, or that clearly track
+non-age-trend ring-width variations in longer series. Most often
+this manual step consists of specifying a "stiffer" spline than
+arrived at in the first pass, or sometimes a horizontal line (no
+detrending) or modified negative exponential. 
+
+Core indices linearly shifted and scaled before averaging into
+tree indices to make difference-method indices compatible for
+statistical merging with ratio-method indices. The scaling is a
+shifting of the mean of the core index to 1.0. The scaling is
+multiplication of the departures from the mean such that the
+variance of the difference index is equal to the variance of a
+ratio index computed using the same ring-width data and
+detrending curve.  
+
+Table below lists the power transformation and detrending
+option used for each ring-width series. 
+
+                                                                
+N Core    Fit Period    Curve fit    Persistence                
+ 1 FRY01A  1813  1992     CS(1058 yr)  AR(2)  0.24              
+ 2 FRY01B  1838  1992     CS(1093 yr)  AR(1)  0.34              
+ 3 FRY02A  1786  1992     CS(199 yr)   AR(2)  0.09              
+ 4 FRY02B  1833  1992     CS(1029 yr)  AR(2)  0.07              
+ 5 FRY03A  1743  1992     CS(663 yr)   AR(1)  0.25              
+ 6 FRY03B  1803  1992     CS(105 yr)   AR(1)  0.16              
+ 7 FRY04A  1640  1801     CS(682 yr)   AR(1)  0.08              
+ 8 FRY04D  1642  1950     CS(1023 yr)  AR(1)  0.29              
+ 9 FRY04E  1828  1930     CS(118 yr)   AR(1)  0.25              
+10 FRY05A  1695  1992     CS(182 yr)   AR(2)  0.19              
+11 FRY05B  1617  1950     CS(167 yr)   AR(2)  0.17              
+12 FRY06B  1738  1992     CS(204 yr)   AR(1)  0.19              
+13 FRY06C  1659  1992     CS(217 yr)   AR(1)  0.13              
+14 FRY07A  1805  1992     CS(400 yr)   AR(1)  0.11              
+15 FRY07B  1827  1992     CS(166 yr)   AR(1)  0.06              
+16 FRY09A  1810  1992     CS(93 yr)    AR(1)  0.11              
+17 FRY09B  1791  1992     CS(147 yr)   AR(1)  0.11              
+18 FRY10A  1806  1992     CS(922 yr)   AR(1)  0.11              
+                                                                
+                                                                
+Fit Period = period of ring width used in curve fitting         
+  * = differs from full available period of ring width data     
+c = shift parameter                                             
+p = power                                                       
+  p>1 ring width is raised to this power                        
+  p<1 ring width is raised to this power, then sign changed     
+  p=1 no transformation                                         
+  p=0 log10 transformation                                      
+Curve Fit = type of model used to detrend ring width            
+  NE=modified negative exponential                              
+  SL=least-square-fit straight line                             
+  HL=horizontal line at mean of ring width for fit period       
+  CS=cubic smoothing spline                                     
+     (wavelength of 50% frequency reponse in parentheses)       
+Persistence = autoregressive prewhitening information           
+  AR(q) = order q of autoregressive model fit to core index     
+  nn  = decimal proportion of core-index variance due to        
+     persistence; computed as 1-R, where R is the ratio of      
+     variance of residual index to variance of standard index   
+References:                                                     
+Cook, E.R., Briffa, K., Shiyatov, S., Mazepa, V. 1990.  Tree-   
+  ring standardization and growth-trend estimation. In: Methods 
+  of dendrochronology, applications in the environmental        
+  sciences.  Kluwer Academic Press, Boston, 104-123             q                                                     
+Cook, E.R., Peters, K., 1981.  The smoothing spline: a new      
+  approach to standardizing forest interior tree-ring width     
+  series for dendroclimatic studies.  Tree Ring Bulletin, 41,   
+  p. 45-53                                                      
+Hoaglin, D.C., Mosteller, F., Tukey, J.W.,1983.                 
+  Understanding robust and exploratory analysis. John Wiley &   
+  Sons, Inc., New York.                                         

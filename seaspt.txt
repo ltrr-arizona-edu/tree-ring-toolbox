@@ -1,0 +1,12 @@
+<HR>
+<A name='Seaspt'><H3>Seaspt</H3> </A>
+<PRE>
+ seaspt:  seasonalize a monthly precipitation or temperature series
+ F = seaspt(A,begmo,endmo,k);
+ Last revised: 4-30-99
+
+</PRE>
+<PRE>
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A>

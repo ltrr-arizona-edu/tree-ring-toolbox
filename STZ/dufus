@@ -1,0 +1,35 @@
+Sample size in .crn file is the number of trees              
+rather than the number of cores.                             
+Core indices computed as the ratio of ringwidth              
+to fitted trend line.  Core indices averaged to              
+to form tree indices.  Tree indices averaged to              
+to form site index.  Bi-weight mean used if 6 or             
+more trees in a given year.  Otherwise chron                 
+computed by arithmetic mean. Residual chron                  
+computed likewise, except from autoregressive                
+residuals of core indices.  All ringwidth series             
+used in chronology are listed in table below,                
+with sufficient information to allow independent             
+researcher to duplicate construction of site                 
+chronology from the ringwidths in the .rwl file              
+                                                             
+N Core    Fit Period    Curve fit    Persistence             
+1 SAW100A 1774  1940     CS(117 yr)  AR(1)  0.07             
+2 SAW101A 1828  1993 *   CS(136 yr)  AR(1)  0.22             
+3 SAW102C 1830  1950     CS(85 yr)   AR(1)  0.32             
+4 SAW103B 1747  1932     NE          AR(1)  0.31             
+5 SAW104A 1903  1993     CS(64 yr)   AR(1)  0.23             
+                                                             
+Fit Period = period of ring width used in curve fitting      
+  * = differs from full available period of ring width data  
+Curve Fit = type of model used to detrend ring width         
+  NE=modified negative exponential                           
+  SL=least-square-fit straight line                          
+  HL=horizontal line at mean of ring width for fit period    
+  CS=cubic smoothing spline                                  
+     (Wavelength of 50% frequency reponse in parentheses)    
+Persistence = autoregressive prewhitening information        
+  AR(q) = order q of autoregressive model fit to core index  
+  nn  = decimal proportion of core-index variance due to     
+     persistence; computed as 1-R, where R is the ratio of   
+     variance of residual index to variance of standard index

@@ -1,0 +1,105 @@
+- rwlinp.m to store ring widths from .rwl file in a .mat file as 
+  strung-out column vector X with associated core ids in nms and 
+  row-indexing and years in yrs
+
+- grplot1 on ice.mat to get grouped time series plots of ring width 
+  for various cores
+
+- cfit1.m  to select curve fits:
+
+  * store curve-fit info matrix S along with previous contents of
+    ice.mat in ice1.mat
+
+- cfit2. to non-interactively compute the standard core indices
+  * pick cfit1.mat as input
+  * in response to prompt, save as new file ice2.mat
+  * ice2.mat now holds everything from ice1.mat plus IX
+
+	IX -- strung out vector of core indices corresp to X
+	  Missing value codes have been put in slots for some
+	  years, depending on whether blocked out in curve
+	  fitting
+
+ 	?? need to check that curve fits use the period specified
+     	in S(:,10:12), not in yrs
+
+- arres.m for AR modeling to get residual core indices
+  * Point to ice2.mat as input
+  * in response to prompt, save in ice2.mat
+  * ice2.mat now holds old data plus EX and P
+
+    EX -- AR-residual tree-ring indices for cores; strung-out vector
+	same size as X and IX, with additional missing values where
+	to allow for startup of AR modeling
+
+    P, by column
+     1 seq number of core
+     2-3 begin, end year of core ring widths
+     4 model order
+     5 variance ratio :  estim errors to original series
+     6-10 parameter estimates
+     11-13 acf at lags 1-3
+     14-16 pacf at lags 1-3
+  
+
+    ?? should years in col 2 be adjusted for fit of AR model?
+    ?? need to check indexing. AR fit should be using period specified
+	in S(:,10:12), not whole period as specified in yrs
+    ?? need to add a col to P to store 95% conf limit on first-order r
+	for one-tailed test (see acf.m)
+
+- stats1.m for statistics on core indices
+ CS1 -- basic stats on standard indices; CE1, same for residual core indices
+    1 - seq number of core
+    2 - start year of core
+    3 - end year of core
+    4 - number of years in core
+    5 - mean
+    6 - mean sensivity 
+    7 - standard dev
+ CS2, CE2:  between-core correl coefficiets;  Columns:
+    1 - coefficient
+    2 - sample size (time-series length)
+    3 - 1 if the cores from same tree, 2 if from different trees
+    4,5 - sequence numbers of the two cores
+ CS3, CE3: mean between-core correlation coefficient
+    Row 1: the average correlation
+    Row 2: the number of corr coeffs the average is based on
+    Col 1: cores from different trees
+    Col 2: cores from same tree
+
+
+***** REVISION OF CURVE FITS -- SAY WANT TO CHANGE ONE CURVE-FIT
+
+- cfit1, using as input ice1.mat
+  * store result back in ice1.mat, S will have been changed
+ 
+- cfit2.m on ice1.mat:  
+  * store result in ice2.mat; now have revised set of standard core
+    indices
+
+- any subsequent functions -- eg., arres.m, stats1.m,  
+
+
+
+**********************  END OF COMPUTATION OF CORE INDICES
+
+After finished revising curve fits, cfit2.mat holds the final core indices
+and statistics.  The next step is to convert these core indices to tree
+indices, then to get the tree-indexnc statistics.  
+
+
+
+*****************************************************************
+
+
+bldmask.m on ice2.mat to mask out cores from chronology. The tree
+  indices will be based on the data set minus those cores.
+  This decision based on statistics, quality of cores, length, etc.
+  Optionally added to ice2.mat is 
+ 
+  msk -- col vector, elements 1 except 0 if the core is to be masked
+
+
+***********  
+

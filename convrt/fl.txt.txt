@@ -1,0 +1,10 @@
+fl.txt -- \mlb\convrt\    -- conversion functions
+
+day2fle1 Eischeid daily station P to Julian Day files
+daycon1 US summary of day data to julian day matrix and monthly sums or means
+	Handles any of the dozen or more types of climate variables in the US sod data set.
+	These include pcp, tmp, wind speed, rh, sunshine, ...
+datfrm1 Matlab numeric matrix, with optional col headings, to splus dataframe
+rw2tsm  rw-file to time series matrix
+sov2mon1 steve leavitt's monthly pcp or tmp in single column asciii file without
+  years, to .mat monthly storage file, with year as col 1, data in 2-13

@@ -1,0 +1,207 @@
+file:  FL.MIN
+
+list
+of dm created "m" files in C:\soft\matlab\mine
+arma.m	exploratory fitting of low-order models
+ascppt1.m ... script template for getting monthly ascii ppt from mat files;
+	uses fpfmon1.m
+bnacon1.m  cull subset bna coords from surfer bna file
+chart.m MATHWORKS for greek characters
+chi_5_1.mat  table of 5%, 1% values of chi sq, from Panofsky, 55
+chi1.m [f] chi-sq stat for a contingency table
+chkyrs1 % Given (1) a group of monthly pcp  *.mat files,  
+ (2) a txt file of names of the .mat files, and (3) a .mat file
+ with supposed start and end years for the .mat files --- does this:
+ Checks that the indicated start and end years match the
+ true start and end years in the files.
+clisplc1.m -- splice monthly climate data from two stations
+consec.m -- find longest consec streak of non-missing data in vector
+corr1.m - function:  corr mtx on grouped monthly ppt, etc vs trees
+	Called by resp.m.
+countq.m [f] -- count # years outside quantiles in subperiods of ts
+corf1.m [f] -- lag correl matrix for two time series. Used by xdate.m
+crnplot1.m [f] tsp of chronolology (top) and sample size (bottom)
+splfres.m  cook-peters frequency response for given spline p-parameter
+splexpl.m  example spline fit to synthetic sine-wave ringwidth
+cv2arr.m ..strung-out col vector to array of time series.
+date2seq.m  convert day,mon,yr to seq index, where 1=jan1, 1840
+dat2mat1.m ... convert ascii data files to mat files with same prefix
+daychk1.m ...aux to help troubleshoot dayest.m daily ppt estimation
+dayest1.m ... 2nd-level [f] under dayfill.m. Loops thru julian days
+dayest2.m ... like dayest1.m, but uses median ratio method
+dayfcon1...convert a netscape/USGS daily discharge file to monthly in acre-ft
+dayfill.m ... estim of mssg daily ppt values -- top-level function
+dec2dms.m ... decimal degrees coordinate file to degrees minutes seconds
+dec2dms2.m .. like dec2dms.m, but handles "west longitude negative" files
+det2tsm1.m  convert type-1 dettinger flow file to tsm.  type 1 means
+ all gages uniform time period, no need to get period info for indiv
+ gages
+deviance.m ... similarity measure for cases in terminal nodes of tree-based
+	models
+devfmn.m  convert array of temperature in degrees to departures from mean
+dmass.m	double mass plots for monthly ppt eval of nonhomogeneity
+		Also does an ANOVA test for change in means.
+dftsq.m  comptation of sq of dft, and relationship to variance of series
+	 also shows relation of Bloomfield to Ljung definitions of pdgm
+dms2dec.m ... degrees,minutes, seconds coords to decimal degrees
+dms2rad.m [f] angle in deg, min, sec to radians
+dxsq.m	index-sequential superposed epoch analyis
+dwgt.m	inverse distance weighting of a tsa
+endyrs.m  form table of begn, end yrs of a tsa, not all valid data
+filter1.m lowpass  hamming filter a series 
+findmiss.m [f] find years and months of mssg data in a pppt or temp mtx
+firdmm1.m hamming fir filter design -- for use with fltplay1.m
+firdmm2.m hamming fir filter design -- for use with fltplay2.m
+fitfun3.m  nonlinear least squares hugershoff fitting, using optimiz pkg
+flowcon1.m convert BOR Lees Ferry monthly flow series to water year and monthly 
+flistin.m [f] read in a list of file names; used by rwlook.m
+fltplay1.m interact fltering of ts with hamming filter -- filtfilt version
+fltplay2.m interact filt of ts with hamming filter -- filter version
+fox2pth.m  path\filename file from foxpro file information
+fpfmon1.m fprintf monthly ppt, or other mtx with years as rows and month vals
+fpfmon2.m fprintf mean ratio statistics on monthly ppt estimation 
+fpfmon2.m
+freqest1.m  [f] estim of data by cum freq distrib from 2nd stn -- see
+	dayfill.m
+freqres1.m  frequency response of a filter
+ftest.m --function--95 pct pnt of f distrib for given df of numer, denom
+gcdist.m [f] great-circle distance matrix for 2 sets of data points
+getxy.m... decimal deg, min, sec file to x,y mapping coordinates
+hinge.m [f] medians, extremes, fourths (hinges) following
+	Hoaglin et al.  Used in power transformations
+hist1.m   make histogram vbl files for later grapher plotting
+huger.m [f] hugershoff function, no constant level
+hugerk.m [f] hugershoff, with constant term
+intnan.m  flag for internal NaN (not trailing or leading) in a vector
+invtxt.m -- sohel, text at a position in a figure window
+kendtau.m [f] kendall tau statistic on pair of time series
+jdisp -- sohel, display text in a window for better visibility
+juxta1.m [f] juxtapose rows of one array against those of another
+lagyr3.m [f] sets up lagged predictor array for large-scale ss regress.
+lagyrs.m [f] form mtx of y  and lagged x for later regression analysis w
+	bmdp
+latchg.m  convert lofgren long-lat file to weplot.m compatible
+lintrnd.m [f] linear reg line, r, and coef for pair of vectors
+lfsync.m - nonparametric check on synchrony of low-frequency variations
+locab and locab??? -- sohel, locally absent ring analysis
+lupxy.m [script] build lookup table for map coordinates from long, lat
+lyrs.m	list specified years and data from an array
+mafilt1.m moving average filter a time series, with control over whether
+	centered moving average or endpoint moving average
+mafilt2.m [f] moving average filtering of a time series
+mannkend.m [f]  Mann-Kendall test for inhomogeneity
+mce1.m [f]  minimum covering ellipsoid to distiguish extraps from 
+	interpols in regression
+mdncull.m compute medians, min max for diff cols, using one column as
+  		an indicator variable (say for species)
+meannan.m mean of tsm with NaN entries
+meanrt1.m [f] compute mean ratios for missing data estimation
+meanrt2.m [f] apply mean reatios from meanrt1.m; called by zest.m
+medcorr.m  median and max correl of tri with nearby climate series
+medrat.m [f]  median-ratio method for estim of missing ppt
+medday.m  low-level function used by dayest.m for missg daily ppt est
+merg1.m  merge monthly ppt data, earthinfo with TRL
+monfill.m median-ratio method estimation of missing monthly ppt or temp
+monorg.m  organize ppt or temp matrix before running monfill.m
+near.m	nearest clim stns and distances to tree-ring sites.
+near1.m   nearest clim stns and distances to sites -- quadrant search
+near2.m   (not debugged) like near.m, but no stn assigned to more than
+	one site.
+negexpk.m [f] modified neg exponential fit to data -- nonlinear least sq
+pairchk1.m [f] called by dayfill.m to get n of zero-ppt days, etc
+	Poorly vectorized version.  See pairchk2.m for comparison.
+partialr.m [f] partial correlations
+pctn.m    function -- array to pct of normal, by col means
+pdgm1.m 	smoothed periodogram
+pdgm2.m   dedicated version of pdgm1.m for producing fig 3 of paper in AB1
+pdgm3.m   dedicated version for producing figs 2a and 2b in AB1
+pdgm4.m   dedicated version for fig 4 in AB3
+pdgmout.m transfer data from pdgm1.m to ascii for plotting with splus
+pdsicnt1.m  dedicated, for count of num of gridpoints with tri narrower
+	than threshold geared to gridpoint pdsi <=-2
+pdsicnt2.m  dedicated, like pdsicnt1.m except no longer geared to pdsi
+pdsicnt3.m  number of ed cook reconstructed gridpoints drier than thresh
+pickfls -- sohel, pick several data files
+plotmk.m  [f] double-mass plots, plus  mannkend.m for test of
+inhomogeneity 
+potter.m  [f] detect inhomogeneity in precipitation series
+pptcon1.m   convert monthly ppt from Bob Lofgren multi-station file to
+	individual .mat files for each station; used before ptest.m
+pptcon2.m convert COOP/NWS file of station monthly pcp to .mat files;
+	build database, lat-long, etc files to match; used in SRP study
+pptcon3.m  read a Lofgren file of many monthly pcp decks; convert data
+	to station .mat files;  build other files of long-lat, database, etc
+ptest.m estimate missing monthly ppt or tmp data for network of stations
+pwar.m	find min AIC AR models (1-6), and whiten tsa using them
+prew1.m	whiten tsa using low-order arma models of specified order
+quantile.m [f] compute pth quantile for ts matrix
+r4sov.m correlation coefficients for time series in strung out matrix
+rain.m    plot seasonal (4-quad) and annual ppt (used in mesquite study)
+rear1.m	rearrange monthy ppt series to be matlab-useful
+		Run before dmass.
+recinp -- sohel, converts Ed Cook reconstructed PDSI to matlab readable
+regcli1.m regional ppt or tmp series from station data by standardized normals
+resp.m	corr mtx between trees and various monthly clim combinations
+resp1.m   single-month version of resp.m:  which months p,t are key?
+respoint.m [f] interpolate wavelength of given freq resp of a filter
+rglrec1.m [f]--gridpoint, or general regional reconstruction over network
+	Used after ssrecon1.m for langbein grid recon of july pdsi
+run2.m	for runs plots
+runs.m 	get vector of years with time series below threshold
+rwchng.m [f] transforms rw to ring-width change for use in rwlook.m
+rwlinp.m converts ring-width file from .rwl  to sov format
+rwlinp1.m uses rwlinp.m to convert many .rwl ring-width files to sov format
+rwlook.m [f] graphical check of crossdating
+rwread.m [f] read an "rw" file of ring-width into a matrix of year and rw
+scale1.m  shift mean and scale to estimate by standardized anomaly method
+seaspt1.m seasonalize a particular type of guttman hcn data
+sepred.m [f] stadard error of prediction and related quantities
+shap1.m	re-shape a mult-rec-per-year array into matlab tsa
+shap2.m   unshape a matlab tsa into regular mult-recs-per-year array
+shlmnu -- sohel version of built in menu function
+skew.m	[f] skew coefs and 95-pct point of dist
+slp1.m 	function--returns ratio of slopes of two lines fit by lsq
+sos.m		function--sum of squares for regression terms.  Used  by stepr.
+sov2mat.m  strung-out vector to time series matrix--user points to file names
+sov2tsm strung out vector to time series matrix
+spltomlb.m [f]--convert a strung-out vector file into a matlab matrix
+sprdloc.m [f] spread-location plot to get power transformation
+  parameter.  After Hoaglin et al.
+ssrecon1.m [f]--single-site reconstructions at network of points
+stdnan.m standard deviation for tsm with NaN entries
+stepr1.m   [f]--stepwise regression, to max adjusted r-squared
+stepr2.m  [f]--like stepr1.m, but uses partial correlations to pick vbls
+subyears.m [f] -- compute beg, end years of sub periods eq in length to calib
+sumnan.m -- sum cols of matrix with some NaN 
+tablepot.mat:  table of critical values for use by potter.m
+tabout1.m [f] .. matrix to data file usable as table in MS Word
+tdist.mat ... dist of t (2-tailed tests); col1=df, col2=0.05, col3=0.01
+trailnan.m remove trailin NaNs from a vector
+treecnt1.m counts the number of trees at a site in specified years
+treecnt2.m counts the number of trees cumulative at several sites in specified
+	yrs
+tsm2sov ... time series matrix to strung out vector
+tsmav1.m ... average tsm columns to regionalize series, optional control
+	over handling of NaN
+txtin1.m ... read a string matrix (with @ for blank) 
+usdisp ... sohel, to display any text in a window for better visibility
+usinp ... sohel, to get screen input through a window
+vrat.m	function--returns F stat for variance test for nonhomogeneity in
+		ppt record.  From Bruce and Clark.  Called by dmass.m
+weplot.m  scatplot of climate-tree r  vs long or lat
+wgtdist1.m weights matrix by distance from gridpoint to stations, time 
+	varying station makeup in matrix
+whit1.m  -function- fit AR model and return resids plus info 
+wrpcon1... convert word-wrapped edix-edited divisional pcp file to correct form
+wygrab.m -- extract monthly acre-ft discharge values from a USGS daily
+	file obtained from Tucson office
+xdsum1.m [f] form subscript array needed by xdate.m
+zest.m  estimation of missing monthlt ppt by mean ratio or mean departure
+zscores.m [f] obvious
+
+
+aa3.mat  	setup for .aa3 analysis  using arma.
+		A: tsa 1700-1979, indices for 249 sites
+		ends: begin and end year for each site for analysis
+		colwhich: which series (column+1) of A to be analyzed
+

@@ -1,0 +1,47 @@
+<HR>
+<A name='Seaspt'><H3>Seaspt</H3> </A>
+<PRE>
+ seaspt:  seasonalize a monthly precipitation or temperature series
+ F = seaspt(A,begmo,endmo,k);
+ Last revised: 4-30-99
+
+</PRE>
+ Converts monthly climatic data to seasonal data. For example,
+ you might want an annual time series of precipitation grouped
+ from September of the previous year through August of the current
+ year for use in a climatic reconstruction model. Or maybe a time
+ series of summer temperature (averaged of June,July,August).
+
+ Before calling seaspt.m, you should have the monthly climate data in a
+ 13-column numeric matrix within Matlab, with the year as column 1. It's
+ best that this missing-data be coded as NaN in this matrix.  That way,
+ any seasonalized value relying on the missing data for any month will also
+ be NaN.
+
+<PRE>
+*** INPUT
+
+ A(? x 13)d  monthly ppt or tmp; year in col 1; Jan data in col 2 ... Dec in col 13
+ begmo (1 x 1)i Begining month of season. Jan=1, Dec=12.
+ endmo (1 x 1)i Ending month of season.   Jan=1, Dec=12.
+ k (1 x 1)i option for type of variable
+   k=1, A is ppt, runoff, effective ppt, or any variable summed over months
+   k=2, A is temperature, pdsi, Z-index, or soil moisture
+   Only difference is
+		seasonalized ppt, etc,  is computed as sum over months,
+     temperature, etc., is computed as average over months.
+
+***  OUTPUT ARGUMENT
+ F (? x 2)  Seasonalized ppt or temp.  First col is year of ending month
+		of seasonal grouping.  Say begmo=11, endmo=1, and yrs=[1930 1950].
+		Then beginning year of seasonalized series (Nov-Jan) is 1931, which
+		is based on Nov and Dec of 1930 and Jan of 1931.
+
+
+*** REFERENCES -- none
+
+*** UW FUNCTIONS CALLED--none
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A>

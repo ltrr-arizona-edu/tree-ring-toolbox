@@ -1,0 +1,55 @@
+stepsstz.txt: STANDARDIZATION OUTLINE, USING 'dat' AS SAMPLE SITE CODE
+
+1 rwmeas/meas -- measure series -->datmeas.mat
+
+2 rwmeas/edit -- make rwlset for all dated and potentially useful series
+	<datwt1>
+
+3 rwmeas/edit -- apply that rwlset to get initial rwl filt <datwt1.rwl>
+
+4 cofecha on datwt1.rwl --> dat1.cof; check it out and note bad series
+
+4a rwlook (after rwfiles) to check out if truncation of some series;
+note
+
+5 rwmeas/edit -- revise rwlset <datwt1> to omit those flagged by cofecha
+
+6 rwmeas/edit -- apply that rwlset to get revised rwl file <datwt1.rwl>
+
+7 rwlinp on datwt1.rwl --> datwt1.mat
+
+8 grplot on datwt1.rwl --> hard copy plots for reference
+
+9 lfcheck on datwt1.mat: note series poorly agreeing with masses in low
+	freqs and note effect of various spline-length choices on inter-series
+	correlation at low frequencies
+
+10 rwmeas/edit -- revise rwlset <datwt1> to omit those flagged for LF
+	drift
+
+11 rwmeas/edit -- apply that rwlset to get revised rwl file <datwt1.rwl>
+
+12 rwlinp on datwt1.rwl --> datwt1.mat
+
+
+13 tranform on datwt1.mat --> revised datwt1.mat
+
+14 crvfit on datwt1.mat with NS combo & constrained spline --> revised
+	datwt1.mat
+
+15 crvfit on datwt1.mat, checking each plot & flagging any weird
+	series--> datwt1.mat
+
+16 corei, treei (masking as needed), sitei on datwt1.mat --> datwt1.mat  
+
+17 crvfit on datwt1.mat, this time choosing uniform fit of n-yr spline
+	and saving series as datwt2.mat
+
+18 corei, treei (masking as needed), sitei on datwt2.mat --> datwt2.mat
+
+
+
+
+
+
+

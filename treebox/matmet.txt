@@ -1,0 +1,59 @@
+From:                      "Richard L. Holmes" <KATI/RHOLMES>
+To:                          DMeko
+Date sent:                 Mon, 23 Feb 1998 14:23:47 -0700
+Subject:                New Program MATMET
+
+Dave,
+
+The met data version of the program to make files for MATLAB is ready for 
+testing by other than myself.  It is called MATMET, and operates similarly 
+to MATCRO.  Some info thereupon:
+
+------------------------------------------------------------------------
+
+Program MATMET prepares set of files structured for MATLAB with
+monthly meteorological data from one or more stations.
+
+Meteorological data are read in Tucson format (I4,12F5.1); but if
+first year is < 1000, data are read in Lamont-Doherty format (I5,12F5.1).
+
+Capacity is 400 years of data.
+
+Input is:
+
+  Enter name of file with list of met data files =>
+  Enter a name for the new files, up to 5 letters with no punctuation =>
+
+  The program tries to guess from the header and the end of the lines of 
+data, what are lat, long, elev, station code, station name, etc.  The user 
+touches <ENTER> if OK, otherwise any entry supersedes the program's guess.  
+I'm sure you will want some changes -- just let me know what they are.  The 
+file __MET.TYP is different from what you requested; it has an entry on a 
+single line for each station.
+
+
+
+New files:
+
+__MET.MET  Meteorological data:  Year, 12 monthly values.
+__MET.DTA  Data file: Sequence number, Longitude, Latitude, Elevation,
+             First and Last year of data.
+__MET.TYP  Text file: Sequence number, data type (eg, Precipitation);
+             Units (e.g., in x 100, mm).
+__MET.TXT  Text info: Sequence number, Station code, Station name,
+             Country, State , Data source (e.g., LTRR Bradley).
+__MET.LOG  General info including time span, missing data, errors.
+
+------------------------------------------------------------------------
+Cheers, Richard
+
+  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  =-=  Richard L. Holmes            Home phone:  520/323-0092         =-=
+  =-=  3443 E. Lee Street           E-Mail:  RHolmes@LTRR.Arizona.Edu =-=
+  =-=  Tucson, Arizona 85716  USA                                     =-=
+  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+ )):) ))) ) )) )) ).) ))) )) ) )) ).) )) ) )) ))) ).) )) ))) )) )).)) )) ))
+ 1950            1960            1970            1980           1990
+
+

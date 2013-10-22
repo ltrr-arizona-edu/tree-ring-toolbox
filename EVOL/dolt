@@ -1,0 +1,15 @@
+Series 1
+     
+Analysis Period:    1- 200
+Time Series Length =  200 yr
+Padded Length =  256 yr
+Frequency spacing = 0.003906 
+     
+Daniell spans for null line: 29  39
+Daniell spans for spectrum: 7  11
+Bandwidth for Spectral Estimates = 0.049472 
+     
+Variance computed directly from (tapered)time series =  0.0685981
+Variance computed from periodogram =  0.0686282
+ 54.3 pct of variance in period range     Inf yr -   4.00 yr
+     

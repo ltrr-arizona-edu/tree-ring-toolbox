@@ -1,0 +1,5 @@
+fl.txt   c:\mlb\stz\
+
+datform1.doc-- table for dating, measuring status log
+crvfit.doc  -- MS Word template for table summarizing standardization curve fits
+   See \howto\wordtbl1.txt      for instructions

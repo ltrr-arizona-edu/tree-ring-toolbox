@@ -1,0 +1,83 @@
+function [xout,yrout,yrsagain]=meastot(xin,yrin,yrstart,yrsagain)
+% yrsagain:  empty, or a rv of years flagged to require re-measuring; on return, empty if remeasured
+
+close all;
+clc;
+% Set some year information
+yrorigin = yrin(1);
+x = xin;
+yrthis = yrstart; % current start year for measurement
+sport = openserial();
+% Initialize counters and while control
+ix = yrthis - yrorigin + 1; % index into x for storing data for yrthis
+reclen = 15; % input string length
+measuring = true;
+dnum = 0;
+reposition(sport, reclen);
+% Measurement while loop
+while measuring
+    try
+        count = 0;
+        while count < reclen
+            [g, count] = fgets(sport); % store measurement (a string) in g
+        end
+        prevnum = dnum;
+        dnum = decodeline(g);
+        % measurement is difference of cumulative reading
+        w = dnum - prevnum;
+        if w < 0
+            % negative delta -- meaning you reversed crank on velmex
+            dnum = 0;
+            [measuring, ix, yrthis] = pausemeasuring(yrorigin, yrthis, max(yrin), sport, reclen);
+        else
+            % measurement is non-negative
+            [x, ix, yrthis, yrsagain] = measureone(x, ix, w, yrorigin, yrthis, yrsagain);
+        end
+    catch EX
+        disp(EX.message);
+        closeserial(sport);
+        rethrow(EX);
+    end
+end
+[xout, yrout] = tidyoutone(x, yrin);
+closeserial(sport);
+end
+
+function [x, ix, yrthis, yrsagain] = measureone(x, ix, w, yrorigin, yrthis, yrsagain)
+% Measure a single total ring width value.
+x(ix) = w;
+disp(num2str([yrthis w]));
+if rem(yrthis, 10) == 0
+    if ispc  % Test OS type to play sound on decade.
+        beep;
+    elseif isunix
+        !aplay -q /usr/local/MATLAB/MLB/velmex/decade-beep.wav &
+    end
+end
+% Clear remeasure flag if year was flagged for re-measurement
+if ~isempty(yrsagain)
+    yrsagain(yrthis == yrsagain) = [];
+    if isempty(yrsagain)
+        yrsagain = [];
+    end
+end
+yrthis = yrthis + 1;
+ix = yrthis - yrorigin + 1;
+end
+
+function [xout, yrout] = tidyoutone(x, yrin)
+% Strip leading and trailing NaN values and reorganize output arrays.
+
+% Strip off trailing NaN
+x = trailnan(x); 
+mx = length(x);
+yr = yrin(1:mx);
+% strip off leading NaN
+xflip = flipud(x);
+yrflip = flipud(yr);
+x = trailnan(xflip);
+mx = length(x);
+yr = yrflip(1:mx);
+xout = flipud(x);
+yrout = flipud(yr);
+end

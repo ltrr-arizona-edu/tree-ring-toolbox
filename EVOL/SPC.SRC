@@ -1,0 +1,36 @@
+# spc.src :  spectral analysis
+pdf11_matrix(data=scan(file='c:\\wrk0\\pdf11.dat'),byrow=T,ncol=2)
+pdf11_ts(pdf11,start=1770,frequency=1)
+
+# Compute padded length as power of 2 at least as large as the
+# unpadded length
+padlen_2
+n_1
+nn_length(pdf11[,1])
+while (padlen<nn) {
+	n_n+1
+	padlen_2^n
+}
+
+# Compute desired padding fraction
+padn_(padlen-nn)/nn
+
+speccy_spec.pgram(pdf11,spans=c(1),taper=0,pad=padn,detrend=F,
+	demean=T,plot=F)
+freq _ speccy$freq
+pdgm1_ speccy$spec[,1]
+pdgm2_speccy$spec[,2]
+C_speccy$coh
+P_speccy$phase
+
+#freq_freq/ (2*pi)
+pdgm1_ exp(pdgm1*log(10)/10)
+pdgm2_exp(pdgm2*log(10)/10)
+
+# var1 is equivalent to variance of the series before padding
+var1_(sum(pdgm1[2:128]) + (pdgm1[129]+pdgm1[1])/2)/128
+varcheck_ (nn-1)/nn*var(pdf11[,1]) 
+
+
+rm(padn,padlen,nn,n)
+

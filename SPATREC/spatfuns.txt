@@ -1,0 +1,25 @@
+
+spatrec1
+
+	ind2log
+	lagyr3
+	stepr2
+		partialr
+		sos
+	yrgosp
+	uniqmods
+	osr
+		eigen1
+			zscores
+		mce1
+		pcareg1
+	crospul2
+	regress1
+	cvstat1
+	
+	pltrec1
+	pltrec2
+	pltrec3
+	spatout1
+	spatout2
+

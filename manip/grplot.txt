@@ -1,0 +1,53 @@
+<HR>
+<A name='grplot'><H3>grplot</H3> </A>
+<PRE>
+ grplot: multiple time series plots of ring width on a page
+ grplot;
+ Last revised 4-15-99
+
+</PRE>
+ grplot operates on ring-width data converted beforehand from a ".rwl" file
+ to a ".mat" file using the UW-function rwlinp.m.   Up to eight ring-width
+ series can be plotted on a page.  The user can plot the series in the same
+ order they are stored in the original .rwl file, or can select or re-order
+ series (by starting year is one option) before plotting.<P>
+
+ The intended use of grplot is as an aid in deciding on the form of the
+ growth curve to use in de-trending ring-width series.  Low-frequency
+ ring-width fluctuations not shared by different trees are readily seen in the
+ plots.  Removal of such fluctuations by the growth curve is probably
+ reasonable. <P>
+
+ grplot can optionally be run in two modes:  "single" or "batch".  Single mode
+ applies to a set of ring-width series from one site.  Batch mode applies to
+ multiple files of ring-width series, perhaps from several sites.  Single mode is
+ interactive, with zoom capability on plots.  Batch mode is not interactive, but
+ can generate .ps files, one per site, for later printing and viewing.<P>
+
+<PRE>
+*** IN ******************************************************
+
+ No input arguments
+
+ User prompted for various options, and to point to files for input and
+ output
+
+*** OUT *******
+
+ No output args.
+
+ File output is optional, and consists of one or more postscript (.ps) files, one for
+ each input .mat ring-width file.  The user can specify the filename in interactive
+ mode.  In batch mode, the .ps suffix is assigned to the same prefix as the input
+ .mat file containing the ring-width file.
+
+ In "single" mode you can view the figure windows as the program runs and afterwards.
+ In "batch" mode, figure windows are not saved, but are overwritten from on
+ ring-width file to ring-width file.  But in batch mode, have the plots stored in
+ .ps files for later plotting.
+
+*** REFERENCES -- none
+
+</PRE>
+<BR>
+<A href='toolbox.html#fcnlist'> Back to Function List       </A>

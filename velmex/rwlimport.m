@@ -1,0 +1,717 @@
+function X=rwlimport(X,editmode,kdigits)
+% Template is rwlinp.m in \stz\
+% Modified to just return data needed by rwmeas-formatted storage file
+% rwlinp:  read .rwl-file ring widths and store in indexed-vector format in a .mat file
+% rwlinp(pf1,path1,path4);
+% Last revised 1-24-01 to handle rwl with series beginning before year -999 
+%
+% rwlimport: import .rwl file of total or partial widths into cell-format ringwidth storage
+% X=rwlimport(X,editmode);
+% Last revised 2006-08-09
+%
+% Import .rw, .eww or .lww data into cell-format ring-width storage.  You want to incorporate measurements
+% made elsewhere into a cell-format file.
+%
+%*** INPUT 
+%
+% X -- structure of total or partial ring width data (see rwmeas.m), or [] if no such structure yet
+%   exists
+% editmode (1 x ?)s type of measurement being imported
+%       =='Total'
+%       =='Partial'
+% kdigits   ==1 input data units 100ths of mm
+%           ==2 input data units 1000ths of mm
+%
+%
+%*** OUTPUT
+% 
+% X -- revised structure
+%
+%*** REFERENCES -- NONE
+%
+%*** UW FUNCTIONS CALLED 
+%
+% fixname1.m -- fix core names if needed
+% intnan.m  -- checks for internal NaNs in a vector
+% trailnan.m -- lops off trailing NaNs from a vector
+%
+%*** TOOLBOXES NEEDED -- NONE
+%
+%*** NOTES ***************************************
+%
+% Handling of missing values in the .rwl files. Some ITRDB .rwl files
+% have blanks for one or more internal years of a time series. In other
+% words, the series is not continuous.  rwlinp.m checks for this, and
+% warns the user, listing the series name and the violating year(s) on
+% the screen.  The output X file will have NaNs in place of such 
+% missing data.
+%
+% The core id.  rwlinp.m assumes the core id is in cols 1-8 of every line.
+% A new series begins when any character of the the core id changes.
+%
+% Finding the first year of a ring-width series. rwlinp assumes the
+% convention that the "year" on the first decade line of a ring-width
+% series corresponds to the first year of data.  Like:
+% 
+% xxxxxx  1867   232   121    45
+% xxxxxx  1870   etc    etc  etc  ...
+%
+% Note the start year above is 1867, and the three values on the first
+% line are for 1867,68,69
+%
+% The end year of a ring-width series.  Assumed to be the last value
+% preceding a data field with either all blanks,  a numeric 999, or -9999
+%
+% End of file.  Assumed when any one of the following occurs:
+%  1. eof encountered
+%  2. ctrl-z starts a line
+%  3. col 1 of a line is blank
+% Some .rwl files have eof after the last data line. Some have eof on the
+% last data line.  This is tested for in the initial count of data lines.
+%
+% Header lines in input .rwl.  ITRDB convention puts 3 header lines
+% on the .rwl files.  rwlinp.m handles .rwl files with or without
+% the header lines.  Header lines are assumed if the following 
+% two conditions are satisfied:
+%   1. col 8 of the first line in the file contains "1", col
+%        8 of line 2 a "2", and col 8 of line 3 a "3"
+%   2. lines 9:12 of the first line do not comprise a number
+%
+% A check is made for weird content of first data line.  I found that some
+% non-ITRDB .rwl files have miscellaneous data in first line.  rwlinp
+% checks that cols 9-12 of first data line 
+% are consistent with being a year.  Col 9-12 must contain a single 
+% right justified numeric value. Otherwise, error message. 
+%
+% Cols 1-8 generally contain a series code, like "CPE20A1 ", but series starting more than
+% 1000 years before AD require 5 cols for the year (e.g., -1500).  Then the year is in cols 1-7.
+%
+% rwlinp.m is time consuming, but really only needs to be run once for a site.  Then
+% the saved .mat file with data in I-V format can be loaded whenever you
+% want to access ring widths for use in Matlab.
+%
+% See special calling program rwlinp1.m (not in toolbox) 
+% to convert lots of .rwl files at one time
+%
+%------ assumed form of input .rwl file ---------------------
+%	Col 1-7 or 1-8:  Core ID strings. 
+%	Col 9-12 or 8-12 Year (decade)
+%	Col 13-18, 19-24, ... Ring-width values, 10 per line
+%
+% The rwl file might optionally have a 3-line ITRDB header.  Function finds this
+% out for checking that col 8 of lines 1,2,3 contain "1", "2", "3" respectively; 
+% and that cols 9-12 of line 1 are inconsistent with being a year
+%
+%
+% Input .rwl files.  Two or three files must be available:
+% 1- earlywood widths (e.g., slcwe1.rwl)
+% 2-latewood widths (e.g., slcwl1.rwl)
+% 3-total-widths (e.g., slcwt1.rwl)
+%  Files 1 and 2 are absolutely necessary. File 3 is optional.  
+%  The general naming is xxxwe?.rwl, xxxwl?.rwl, xxxwt?.rwl.   The suffix must be rwl.  The three chars
+%  just before the suffix must be we?, wl?, or wt?, where ? may be any number, but must be the same for all three files
+%
+% Rev2006-08-09: new input arg kdigits. Uses this to allow to read widths that are 1000ths of mm or 100ths of
+% mm in the input rwl file
+%
+
+%--- INPUT UNITS
+
+L=kdigits==[1 2];
+if ~any(L);
+    error('kdigits in rwlimport must be 1 or 2');
+end
+switch kdigits;
+    case 1;
+        fscale=100; % data in 100ths of mm
+    case 2;
+        fscale=1000; % data in 1000ths of mm
+end
+
+
+
+%--- COMPUTE CURRENT NUMBER OF STORED SERIES
+
+if isempty(X.id{1});
+    nser=0;
+else;
+    nser = length(X.id);
+end;
+mnext = nser+1;
+
+
+%***  SET NUMBER OF FILE-TYPES IMPORT
+
+switch editmode;
+case 'Total';
+    ntype=1; % just .rw
+    suff={'rw'};
+case 'Partial';
+    ntype=2; % .eww and .lww
+    suff={'eww','lww'};
+otherwise;
+end;
+
+%***********    GET AND STORE NAMES OF  INPUT .RWL FILES, AS pftot, pfe, pfl
+
+if strcmp(editmode,'Total');
+    pause(0.1);
+    [fltot,pathtot]=uigetfile('*wt?.rwl','Input .rwl file with total-width measurements');
+    pftot=[pathtot fltot];
+    display(pftot);  % DEBUG
+elseif strcmp(editmode,'Partial');
+    pause(0.1);
+    [fle,pathe]=uigetfile('*we?.rwl','Input .rwl file with earlywood-width measurements');
+    pfe=[pathe fle];
+    pause(0.1);
+    [fll,pathl]=uigetfile('*wl?.rwl','Input .rwl file with latewood-width measurements');
+    pfl=[pathl fll];
+else;
+    error(['editmode == ' editmode ' unrecognized']);
+end;
+    
+
+%-- GET MEASUREMENTS AND SET SERIES PREFIXES
+
+if strcmp(editmode,'Total');
+    display(pftot);  % DEBUG
+    pf1 =pftot;
+    [D1,yrs,nmsorig]=subfcn1(pf1); % modified version of rwlinp.m to read in the .rwl file
+    nms =fixname1(nmsorig);
+    pre.x1=cellstr(nms); % cv-cell of names
+    [D1,pre.x1]=subfcn3(D1,pre.x1,yrs,fscale); % put the data into cells; sort the ids and data[D,nms]=subfcn3(X,nms,yrs)
+    nfiles=length(D1);
+    X.data=D1;
+    X.id=pre.x1';
+    hh=repmat('00/00/0000',nfiles,1);
+    X.when=(cellstr(hh))';
+    hh=repmat('??',nfiles,1);
+    X.who=(cellstr(hh))';
+    X.remeasure=cell(1,nfiles);
+    
+    
+elseif strcmp(editmode,'Partial');
+    pf1 =pfe;
+    [D1,yrs1,nmsorig1]=subfcn1(pfe);
+    nms1 =fixname1(nmsorig1);
+    pre.x1=cellstr(nms1);
+    [D1,pre.x1,When,Who]=subfcn3(D1,pre.x1,yrs1,fscale); % put the data into cells; sort the ids and data[D,nms]=subfcn3(X,nms,yrs)
+    pf1 =pfl;
+    [D2,yrs2,nmsorig2]=subfcn1(pfl);
+    nms2 =fixname1(nmsorig2);
+    pre.x2=cellstr(nms2);
+    [D2,pre.x2,When,Who]=subfcn3(D2,pre.x2,yrs2,fscale); % put the data into cells; sort the ids and data[D,nms]=subfcn3(X,nms,yrs)
+    
+    % check that number of .eww series and latewood series equal
+    if ntype==2;
+        if length(pre.x1) ~= length(pre.x2);
+            error([num2str(length(pre.x1)) ' .eww series, but  ' num2str(length(pre.x2)) ' .lww series']);
+        end;
+    end;
+   
+    
+    % ICHECK THAT IDS THE SAME FOR EWW AND LWWW
+        
+    nfiles = length(pre.x1); % number of series
+    if ~all(strcmpi(pre.x1,pre.x2));
+        disp(char(pre.x1));
+        disp(char(pre.x2));
+        error(['Look!  .eww names not identical to .lww names']);
+    end;
+    
+    
+    X.data=cell(1,nfiles);
+    X.id=cell(1,nfiles);
+    
+    %  ----       STORE THE PARTIAL DATA
+    
+    for n =1:nfiles;  % Loop over files
+        id=pre.x1{n};
+        
+        % Year and data
+        x1=D1{n};
+        x2=D2{n};
+                    
+        % Check start year
+        if ~ (  x1(1,1)==x2(1,1) | x1(1,1)==(x2(1,1)+1)  );  
+            strwarn=[pfinput ' start yrs of eww and lww : ' int2str([x1(1,1) x2(1,1)])];
+            uiwait(msgbox(strwarn,'Fatal Error','modal'));
+            error([id ': inconsistent first years of early and latewood']);
+        end;
+        % Check end year
+        if ~ (  x1(end,1)==x2(end,1) | x1(end,1)==(x2(end,1)+1)  );  
+            strwarn=[pfinput ' end yrs of eww and lww : ' int2str([x1(end,1) x2(end,1)])];
+            uiwait(msgbox(strwarn,'Fatal Error','modal'));
+            error([id ': inconsistent last years of early and latewood']);
+        end;
+        
+        % Compute start year for tsm
+        yrgo = min([x1(1,1)  x2(1,1)]);
+        yrsp = max([x1(end,1)  x2(end,1)]);
+        yrx = (yrgo:yrsp)';
+        nyrx = yrsp-yrgo+1;
+        
+        % Reserve stoage
+        x=repmat(NaN,nyrx,4);
+        x(:,1)=yrx;
+        
+        % store early
+        nsize=size(x1,1);
+        i1=x1(1)-yrgo+1;
+        i2=i1+nsize-1;
+        x(i1:i2,2)=x1(:,2);
+        
+        % store late
+        nsize=size(x2,1);
+        i1=x2(1)-yrgo+1;
+        i2=i1+nsize-1;
+        x(i1:i2,3)=x2(:,2);
+        
+        % computed total
+        x(:,4)=x(:,2)+x(:,3);
+                        
+        % Store 
+        X.data{n}=x;
+        X.id{n}=id;
+              
+    end;
+    hh=repmat('00/00/0000',nfiles,1);
+    X.when=(cellstr(hh))';
+    hh=repmat('??',nfiles,1);
+    X.who=(cellstr(hh))';
+    X.remeasure=cell(1,nfiles);
+      
+end;
+
+% Inform how many series imported (overwritten and added)
+strmess1=[int2str(nfiles)  ' .rw series successfully imported from .rwl by rwlimport.m'];
+strmess2=[int2str(nfiles)  ' .eww and ' int2str(nfiles) ' .lww series  successfully imported from .rwl files by rwlimport.m'];
+if strcmp(editmode,'Total');
+    strmess=strmess1;
+else;
+    strmess=strmess2;
+end;
+uiwait(msgbox(strmess,'Message','modal'));
+
+
+
+
+
+
+%------------- FUNCTION TO READ A .RWL FILE
+function [X,yrs,nms]=subfcn1(pf1)
+
+% Open the data file for reading
+fid=fopen(pf1,'r');
+
+disp(['Input file: ' pf1]);
+
+% Initialize
+a=NaN;
+blnks7=blanks(7);
+blnks8=blanks(8); 
+% Assume max possible 200 cores in a single rwl file
+Nlines=a(ones(200,1),:);
+
+
+% Find out if an ITRDB header  (3 lines) in file
+c=fgetl(fid);
+if length(c)<12;
+	error('First line in .rwl file ends before col 12')
+end
+if c(8)=='1'  &   isempty(str2num(c(9:12)));
+	ihead=1; % there is a set of 3 header lines
+   c=fgetl(fid); % read 2nd header line
+   if c(8)~='2';
+      error('No 2 in col 8 of second header line');
+   end
+   c=fgetl(fid); % read 3rd headr line
+   if c(8)~='3';
+      error('No 3 in col 8 of third header line');
+   end
+   % now positioned for first data line
+else
+   yrcheck=str2num(c(9:12));
+   if isempty(yrcheck) | length(yrcheck)~=1 | isspace(c(12))
+      error('Cols 9-12 of first data line not a year')
+   end
+   
+	ihead=0; % no header lines
+	frewind(fid); % rewind to start of file
+end
+
+% Now positioned at first data line, either line 1 or lin 4 depending on ihead
+
+
+%****************  READ PASS THRU DATA TO DETERMINE HOW MANY SERIES, AND 
+% START AND END ROW OF EACH IN THE DATA FILE
+
+disp('First pass: counting ring-width series and allocating space');
+
+% start and end col for data values
+jgo=(13:6:67)'; % start col for the 10 data values
+jsp=jgo+5;
+J1=[jgo jsp];  % start and end col
+
+%idold=blnks8;
+idold=blnks7;
+k1=1;  % control on while loop
+nsers=0; % series counter
+linec=0; % line count
+while k1;
+	c1=fgetl(fid);
+	% Check for first character being ctrl-z, or for end of file
+   if feof(fid)==1 |  length(c1)<18 | isspace(c1(1)) ...
+         | isempty(str2num(c1(9:12))) 
+      if feof(fid)==1 & length(c1)>=12 & ~isempty(str2num(c1(9:12))); % Graybill type rwl
+         % files have eof on end of last data line. Want to count that line.
+         Nlines(nsers)=linec+1;
+      else; % Regular .rwl files have eof after (below) last data line. Do
+         % not want to count that line as data
+         Nlines(nsers)=linec;
+      end
+      k1=0;
+   else
+      %idnew=c1(1:8);
+      idnew=c1(1:7);
+      if all(idnew==idold);  % same series
+         linec=linec+1;
+      else % first line of a new series
+         if nsers==0;
+            % Do not store count; this is first line of first series
+            nsers=nsers+1;
+            linec=1;
+            idold=idnew;
+         else ; % first line of series other than first series
+				Nlines(nsers)=linec;  % store linecount for prev series
+         	nsers=nsers+1;
+            linec=1; % new series
+            idold=idnew;
+         end
+         
+      end
+   end; % of if feof
+end; % of while
+
+% Trim off unneeded rows of Nlines
+Nlines=Nlines(1:nsers);
+
+% Using the total number of lines in the file, and considering 10 years max per
+% line, compute an initializing length for the strungout vector
+nmax = 10*sum(Nlines);
+
+% Now know this:
+%
+% nsers is number of series
+% Nlines(i) is the number of lines for each series
+% Whether or no 3 header lines (ihead==1 vs ihead==0)
+
+% Allocate
+nms=blnks8(ones(nsers,1),:); % core ids
+I=a(ones(nsers,1),:);
+X=a(ones(nmax,1),:);   % strung out vector
+yrs=a(ones(nsers,1),ones(3,1)); % start yr, end yr, row index of start year
+
+%****************** REPOSITION TO START OF DATA IN FILE
+
+frewind(fid);
+if ihead==1;
+	c=fgetl(fid);
+	c=fgetl(fid);
+	c=fgetl(fid);
+end
+
+%***** Store mask
+cmask=ones(nsers,1);
+
+
+%*************** LOOP OVER SERIES  *****************************
+
+
+disp('Second pass: processing the data');
+
+i=1; % target row in X
+for n=1:nsers;
+    if n==20;
+        disp('20');
+    end;
+    
+	%disp(['nsers = ' int2str(n)]);
+	nrows=Nlines(n) ;  % number of decade lines for this core
+	
+	I(n)=i; % keep track of row in X of first value for this series
+	% Loop over years
+	for m = 1:nrows;
+      c=fgetl(fid);
+%       if n==41;
+%           disp(['n = ' int2str(n)]);
+%       end;
+     
+         
+		% Handle first line
+		if m==1;
+            nmtemp = c(1:8);
+            if nmtemp(8)=='-';
+                nmtemp(8)=' ';
+                yrslot1=8;
+            else;
+                yrslot1=9;
+            end;
+            nms(n,:)=nmtemp;
+            yrgo=str2num(c(yrslot1:12));
+            
+            
+            % Compute number years in initial decade
+            if yrgo>=0;  % If 0 or A.D.
+                ngo=10-rem(yrgo,10);
+            else;
+                ngo=-rem(yrgo,10);
+                if ngo==0;  % A year like -310 as first year of decade should give 10 years in line
+                    ngo=10;
+                end;
+                
+            end
+         
+			% Read those years
+			for j = 1:ngo;
+				jgo=J1(j,1);
+				jsp=J1(j,2);
+				X(i)=str2num(c(jgo:jsp));
+				i=i+1;
+			end
+		elseif m<nrows; % handle full decades
+			for j=1:10,
+				jgo=J1(j,1);
+				jsp=J1(j,2);
+                X(i)=str2num(c(jgo:jsp));
+				i=i+1;
+			end		
+		else; % last row. either 10 values, or ends in 999, -9999 or  blanks
+			decsp = str2num(c(yrslot1:12));   % decade 
+			yrsp=decsp-1;  % tentative end year
+			k2=1;
+			j=1;
+			while k2;
+				jgo=J1(j,1);
+				jsp=J1(j,2);
+				if all(isspace(c(jgo:jsp))) | str2num(c(jgo:jsp))==999 | str2num(c(jgo:jsp))==-9999  | j>=10;
+					k2=0;
+				else
+					X(i)=str2num(c(jgo:jsp));
+					j=j+1;
+					i=i+1;
+					yrsp=yrsp+1;
+				end
+			end ; % of while k2
+		end; % of if m== 
+	end; % of for m= 
+	yrs(n,:)=[yrgo yrsp I(n)];
+end; % of for n over series
+					
+fclose(fid);
+
+%*********************  CHECK CONSISTENCY OF YEAR RANGES AND ROW COUNTS
+
+I=[I;i]; % running index of start row of series in target vector X
+d1=diff(I); % should equal number of years in each series
+d2=yrs(:,2)-yrs(:,1)+1; % likewise
+d3=d2-d1;
+if ~all(d3==0);
+	error('Number of years of data inconsistent')
+end
+	
+%************** Warning for leading or internal missing values in X
+
+if isnan(X(1));
+	disp('Leading NaN(s) in the strung out vector X');
+	disp('Press any key to continue')
+	disp(' ')
+end
+
+Lint=intnan(X);
+if Lint==1; % trouble
+	for n = 1:nsers;
+		igo=yrs(n,3);
+		isp=igo+yrs(n,2)-yrs(n,1);
+		yr = (yrs(n,1):yrs(n,2))';
+		x=X(igo:isp);
+		f=find(isnan(x));
+		if ~isempty(f); % here is trouble
+			disp(['Core # ' int2str(n) '(' nms(n,:) ')']);
+			disp('   Internal NaN in above series at years:');
+			disp(yr(f));
+			disp(' ');
+			disp('Press any key to continue')
+			pause
+			disp(' ');
+		end
+	end
+end
+	
+
+%**************** Get rid of any trailing NaNs from X ********
+
+X=trailnan(X);
+
+% Check that length of X consistent with row indices and years
+% for last series
+
+ilast = yrs(nsers,3)+yrs(nsers,2)-yrs(nsers,1);
+if ilast ~= length(X);
+	disp(['yrs vector says X should have row size ' int2str(ilast)]);
+	disp(['  X has row size ' int2str(length(X))]);
+	error('Row size of X inconsistent with yrs info (see above)');
+end
+
+
+%************************ MAKE OUTPUT FILE *********************
+
+
+% Save output
+%pf2=[path4 file2];
+%eval(['save ' pf2 ' X ' ' yrs ' ' nms cmask Fwhen']);
+
+
+%-------------------  FUNCTION TO CHECK AND CORRECT CORE NAMES
+
+function nms = subfcn2(nms)
+% Template fixname: fix unconventional core names in a .mat storage matrix
+% Modified to allow first 3 chars to be non-letters
+% Last revised 12-18-00
+%
+% Fixes invalid core ids (names) so that crvfit1a, crvfit1b, etc. work properly. Needed because of irregular
+% naming conventions.  For example, some latewood cores have ids ending in XL (e.g., JAC05AXL.RW).  
+%
+%*** INPUT
+%
+% No args.
+% User prompted to click on .mat storage file holding ringwidths in column-vector format in X and
+%    core names in nms
+%
+%*** OUTPUT
+%
+% No output args. 
+% User prompted whether to store revised names in the input .mat file, overwriting the 
+%   old nms.  Option to store in new .mat file.
+%
+%
+%*** REFERENCES -- NONE
+%*** UW FUNCTIONS CALLED -- NONE
+%*** TOOLBOXES NEEDED -- NONE
+%
+%*** NOTES
+%
+% A valid names should the following form:
+%   3 leading letters (site code)
+%   A number (tree number)
+%   A Letter (core designator)
+%   <a number> portion number within core (numbered from inside out)
+
+% GET THE FILE WITH RINGWIDTHS
+[file1,path1]=uigetfile('*.mat','Infile with ringwidths and nms');
+pf1=[path1 file1];
+eval(['load ' pf1 ' nms;']);
+
+nmsold=nms; % store original names
+[m1,n1]=size(nms);
+a = nms(:,1:3); % first 3 chars
+% L=isletter(a);
+% if ~all(all(L'));
+%     disp(nms);
+%     error('Look, first 3 chars not all letters for all series');
+% end;
+
+b=nms(:,4:n1); % remainder of id, beginning with tree number
+
+% Loop over series
+for n = 1:m1;
+    d = b(n,:);
+    L = isletter(d);
+    i=find(L);
+    if min(i)<2;
+        disp(d);
+        error('Look, no tree number');
+    else;
+        dnum = d(1:(min(i)-1));
+        j = str2num(dnum);
+        if isempty(j);
+            disp(d);
+            error('Look, tree number is not all number');
+        end;
+    end;
+    
+        
+        nletter= sum(L);
+    if nletter==0;
+        disp(d);
+        error('Look, this part of name has no letter following tree number');
+    elseif nletter>1;
+        if ~all(diff(i)==1);
+            disp(d);
+            error('Look, letters after first 3  chars not contiguous');
+        end;
+        if nletter==3;
+            e = upper(d(i(2):i(3)));
+            if strcmp(e,'XL') | strcmp(e,'XE');
+                e = blanks(2);
+                d(i(2):i(3)) =e;
+                b(n,:)=d;
+            else;
+                disp(d);
+                error('Look, name has 3 letters, but end is not XL or XE');
+            end;
+        else;
+            disp(d);
+            error('Look, name has 2 letters here');
+        end;
+    else;
+        % one trailing letter, OK
+    end;
+    
+end;
+% 
+% 
+
+% if strcmp(nms,nmsold);
+%     disp('No change to names needed');
+% else;
+%     
+%     B=[nmsold  repmat(blanks(3),m1,1)  nms];
+%     disp('Old and revised names');
+%     
+%     % 
+%     disp(B);
+%     
+%     eval(['save ' pf1 ' nms -append;']);
+% end;
+nms=[a b];
+
+
+
+%-------  PUT THE DATA INTO CELLS; SORT THE IDS AND DATA
+
+function [D,nms,When,Who]=subfcn3(X,nms,yrs,fscale)
+% put the data into cells; sort the ids and data
+
+nser = length(nms);
+D=cell(1,nser);
+When=cell(1,nser);
+Who=cell(1,nser);
+for n =1:nser;
+    yrgo = yrs(n,1);
+    yrsp = yrs(n,2);
+    nyr = yrsp-yrgo+1;
+    yr = (yrgo:yrsp)';
+    igo = yrs(n,3);
+    isp = igo + nyr - 1;
+    D{n}=[yr  X(igo:isp)/fscale]; % data scaled from 100ths or 1000ths of mm to mm
+    When{n}='unkn';
+    Who{n}='unkn';
+end;
+[xthis,ithis]=sort(nms);
+nms=xthis;
+D=D(ithis);
+
+
+
+

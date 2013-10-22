@@ -1,0 +1,29 @@
+==================================================================
+books			MATLAB based books and  M-files
+==================================================================
+conference      	MATLAB conference issues
+==================================================================
+contrib			User contributed M/MEX files and tools
+==================================================================
+doc			Text files relating to MATLAB
+==================================================================
+mathworks		MathWorks contributed M/MEX files and tools
+==================================================================
+mosaic			Mosaic files for various platforms
+==================================================================
+patch			MATLAB functions 
+==================================================================
+pentium			Pentium bug related files
+==================================================================
+proceedings             Proceedings from the MATLAB conference
+                        held, Oct 18-20 1993
+==================================================================
+product-info		MATLAB product info (data sheets)
+==================================================================
+tech-support		Used by MathWorks technical support
+			(not accessible via matlib)
+==================================================================
+utilities		programs that can be helpful in using 
+			this ftp site
+==================================================================
+

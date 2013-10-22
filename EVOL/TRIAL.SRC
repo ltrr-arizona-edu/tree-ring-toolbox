@@ -1,0 +1,26 @@
+# trial.src -- example run of complex demodulation
+
+# Make a random normal, unit variance, 500-year long series, 1400-1899.
+# Add a p-yr cosine wave with variance  to 1600-1799 section
+# Demodulate the series at frequency 1/p (period p years)
+# Plot amplitude and phase of the p-year component
+
+p_20.2
+x_ts(rnorm(500),start=1400,frequency=1)
+t_201:400;
+y_x
+y[201:400]_(x+2.0*cos(2*pi*p*t/500))
+y_ts(y,start=1400,frequency=1)
+dev.set(2)
+tsplot(y)
+title(main='Time Series, 20-year cycle added for 1600-1799')
+
+d_demod(y,1/p,1/p-0.02,1/p-0.005,wrapphase=T)
+
+dev.set(3)
+tsplot(d$amp,ylab="amplitude")
+
+
+dev.set(4)
+tsplot(d$phase,ylab="phase")
+

@@ -1,0 +1,179 @@
+OUTLINE.TXT:  TREE-RING STANDARDIZATON
+
+
+Assume ring widths in file slc96.rwl
+
+RWLINP.M -- Convert ice.rwl into  matlab-readable data
+   
+GRPLOT1.M -- Multiple time series plots of ring-width series
+
+CRVFIT.M -- Growth-trend modeling
+
+COREI.M -- Compute core indices
+   ARMOD -- time series modeling
+   STATS1 -- descriptive statistics on core indices
+
+TREEI.M -- Compute tree indices
+   COREMASK.M -- Build mask to mark cores for omission from analysis
+   TREENUM.M
+   MEANTREE.M
+   STATS2.M
+
+SITEI.M -- Compute site indices
+   TREEMASK.M
+   MEANSITE.M
+   STATS3.M 
+
+TRLFMT.M -- Convert site indices from matlab matrices to trl format
+
+
+*****************************************************************
+
+[ITRDBLIB/CONVERT] *.rw files to an ice.rwl file
+[DPL/SUR]  listing of first, last years of all cores in ice.rwl
+[DPL/COF]  sliding correlation analyis to check on dating/meas
+
+
+
+RWLINP.M -- Convert ice.rwl into  matlab-readable data
+
+ ice.mat holds:
+
+ X         1013 by 1          1013      8104       Full      No 
+ nms       8 by 8            64       512       Full      No 
+ yrs       8 by 3            24       192       Full      No 
+
+
+GRPLOT1.M -- time series plots of ring-width series
+
+
+CRVFIT.M -- growth-trend modeling
+
+ 	 S       8 by 22          
+                  
+
+COREI.M -- Compute core indices                    
+   ARMOD -- time series modeling                   
+   STATS1 -- descriptive statistics on core indices
+
+	CE2      28 by 5           140      1120       Full      No 
+	CE3       2 by 2             4        32       Full      No 
+	CS1       8 by 7            56       448       Full      No 
+	CS2      28 by 5           140      1120       Full      No 
+	CS3       2 by 2             4        32       Full      No 
+	EX    1013 by 1          1013      8104       Full      No 
+	IX    1013 by 1          1013      8104       Full      No 
+	P       8 by 16          128      1024       Full      No 
+
+
+TREEI.M -- Compute tree indices
+   COREMASK.M -- Build mask to mark cores for omission from analysis
+   TREENUM.M
+   MEANTREE.M
+   STATS2.M
+
+		DE       5 by 7 	           
+                DI       5 by 7              
+                ET     611 by 1             
+               ETn     611 by 1              
+             ETyrs       5 by 3              
+                IT     622 by 1             
+               ITn     622 by 1             
+             ITyrs       5 by 3              
+              Tnms       5 by 4              
+                WE       5 by 2               
+                WI       5 by 2               
+             cmask       8 by 1                
+             ofmat       1 by 8                
+              rbtE       1 by 2                
+              rbtI       1 by 2                
+
+
+SITEI.M  --  build site index
+
+
+
+*******************************************************
+
+
+CRVFIT2.M -- produce standard core indices
+   
+ARRES.M -- AR model standard core indices to get residual core indices
+
+STATS1.M -- statistics on core indices;  separately for std and resids
+
+	BASIC1.M -- basic statistics: mean, standard deviation
+	MEANSEN1.M -- mean sensitivity
+	RTREE1.M -- correlations between cores
+	RTREE2.M -- average correlations
+		[average r for pairs of cores from different trees]
+		[average r for pairs of cores from same tree] 
+	
+	On exiting, STATS1.M optionally adds six matrices to xxx.mat
+			CS1, CE1, CS2,CE2, CS3, CE3
+
+
+COREMASK.M -- build mask for user to specify whether or not to include
+  core indices in the chronology.  User will base decision on statistics
+  and other information gained so far.  Only the unmasked series will
+  be used in subsequent analyses.
+
+  On exiting, COREMASK.M optionally adds the mask "cmask" to xxx.mat
+
+INDEX1.M -- convert core indices to tree indices
+
+	TREENUM.M -- gets information for grouping cores into trees
+		Scans nms; applies msk (from COREMASK.M) to pull out only 
+		the rows (cores) desired from nms; from the resulting
+		possibly trimmed version of nms:
+			determines the number of trees
+			makes a string matrix of tree names
+			assigns a tree tag (sequence number
+				cross-referenced to the names matrix) to each core
+		Returns Tnms, Ti, Tn
+
+
+	MEANTREE.M  -- Converts standard core indices, as culled by 
+		the mask from COREMASK.M, into tree indices by averaging all
+		available core indices for each tree in each year. 
+
+	Upon leaving INDEX1.M, the following matrices will be optionally
+	saved by adding to xxx.mat
+			
+			IT, ET: tree indices as strung-out vectors
+			ITyrs, ETyrs:  year info, analogous to yrs for IX
+			Tnms: tree id info, analogous to nms
+			ITn, ETn: strung out vector same size as IT with
+				number of cores that the IT or ET values are
+				 based on
+
+	Unlike X and IX, the strung-out col vectors IT and ET are not
+	constrained to be the same size. Trailing and leading NaNs are
+	removed in building IT and ET.  Usually ET will have more values
+	removed because of loss of startup values in the ar modeling.
+
+		
+
+STATS2.M -- statistics on tree indices
+	[between tree correlation]
+	[EPS statistic]
+	[SSS statistic]
+	[mean sensitivity]
+	[acf and pacf]
+
+
+INDEX2.M -- generate site indices from tree indices
+        	[tsm with year, std index, n of trees, 
+			std deviation of std index]
+		[same for residual index]
+	
+STATS3.M  -- statistics on site indices
+		[mean sensitivity]
+		[autocorrelation and partial autocorrelation coefs]
+		
+
+TRLFORM.M -- convert site indices and other matrices into ASCII
+	files in tree-ring-lab (TRL) format
+
+
+
